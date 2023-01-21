@@ -51,19 +51,18 @@
                             {% endif %}
 						</ul>
 						<p>{{single_product.description}}.</p>
-						<div class="product_count">
-							<label for="qty">Quantity:</label>
-							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-							 class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
-						</div>
+						
 						<div class="card_area d-flex align-items-center">
                         {% if single_product.stock <= 0 %}
-                        <h5 class="text-danger">Out of Stock</h5>
+                        <h5 class="text-danger m-2">Out of Stock</h5>
                         {% else %}
-							<a class="primary-btn" href="#">Add to Cart</a>
+						{% if in_cart %}
+						<button class="btn btn-success m-2"><span class="text">Added to Cart</span><i class="fas fa-check"></i></button>
+						
+						<a class="btn btn-outline-primary m-2" href="{% url 'cart' %}"><span class="text">view Cart</span><i class="fas fa-eye"></i></a>
+						{% else %}
+							<a class="primary-btn" href="{% url 'add_cart' single_product.id %}">Add to Cart</a>
+							  {% endif %}
                             {% endif %}
 							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
 						</div>
