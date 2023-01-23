@@ -50,6 +50,13 @@
                                         </div>
                                         <div class="media-body">
                                           <a href="{{ cart_item.product.get_url }}">  <p>{{ cart_item.product.product_name }}</p></a>
+                                          <p class = "text-muted small">
+                                          {% if cart_item.variations.all %}
+                                          {% for item in cart_item.variations.all %}
+                                          {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }} <br>
+                                          {% endfor %}
+                                          {% endif %}
+                                          </p>
                                         </div>
                                     </div>
                                 </td>
@@ -60,9 +67,15 @@
                                     <div class="product_count">
                                         <input type="text" name="qty" id="{{cart_item.id}}" maxlength="12" value='{{ cart_item.quantity }}' title="Quantity:"
                                             class="input-text qty">
-                                        <a href="{% url 'add_cart' cart_item.product.id %}"><button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                                            class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button></a>
-                                        <a href="{% url 'remove_cart' cart_item.product.id %}"><button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                            <form action="{% url 'add_cart' cart_item.product.id %}" method="POST">
+                                            {% csrf_token %}
+                                            {% for item in cart_item.variations.all %}
+                                            <input type="hidden" name="{{ item.variation_category | lower}}" value="{{ item.variation_value | capfirst }}">
+                                            {% endfor %}
+                                            <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                            class="increase items-count" type="submit"><i class="lnr lnr-chevron-up"></i></button>
+                                            </form>
+                                        <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}"><button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
                                             class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button></a>
                                     </div>
                                 </td>
@@ -70,7 +83,7 @@
                                     <h5>₹{{ cart_item.sub_total }}</h5>
                                 </td>
                                 <td>
-                                    <a href="{% url 'remove_cart_item' cart_item.product.id  %}" class="btn btn-danger" >Remove</a>
+                                    <a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id  %}" onclick="return confirm('Are you sure want to delete this item ?')" class="btn btn-danger" >Remove</a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -83,7 +96,7 @@
 
                                 </td>
                                 <td>
-                                 <h5>Subtotal</h5>
+                                 <h5>Net total</h5>
 
                                 </td>
                                 <td>
@@ -138,7 +151,7 @@
                                     <div class="checkout_btn_inner d-flex align-items-center">
                                         <a class="gray_btn" style="font-size: 13px" href="{% url 'shop' %}">Continue Shopping</a>
                                        
-                                        <a class="primary-btn" href="#">Proceed to checkout</a>
+                                        <a class="primary-btn" href="{% url 'checkout' %}">Proceed to checkout</a>
                                     </div>
                                 </td>
                             </tr>

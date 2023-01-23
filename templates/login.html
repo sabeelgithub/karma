@@ -46,7 +46,8 @@
 </div>
 {% endif %}
 						<form class="row login_form" action="" method="post" id="contactForm" novalidate="novalidate">
-						{% csrf_token %}
+						
+						 {% csrf_token %}
 						<div class="col-md-12 form-group">
 								<input type="text" class="form-control" id="email" name="email" onkeyup="validateEmail()" placeholder="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'email'">
 								<span id="email-error"class='validation'></span>

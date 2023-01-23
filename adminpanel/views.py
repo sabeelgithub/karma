@@ -6,6 +6,7 @@ from category.models import Category,Sub_Category
 from shop.models import Products
 from .forms import Update_categoryForm,CategoryForm,Update_sub_categoryForm,Sub_CategoryForm,ProductForm,Update_ProductForm
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
+from django.db.models import Q
 
 # Create your views here.
 def adminlogin(request):
@@ -216,3 +217,31 @@ def update_product(request,id):
             'form':form
         }
     return render(request,'update_product.html',context)
+def admin_search(request):
+   users = None
+   categories = None
+   sub = None
+   products = None
+   
+
+   if 'keyword' in request.GET:
+       keyword = request.GET['keyword']
+       if keyword:
+           users = CustomUser.objects.order_by('-first_name').filter(Q(first_name__icontains=keyword)|Q(last_name__icontains=keyword))
+           categories = Category.objects.order_by('-category_name').filter(Q(slug__icontains=keyword)|Q(category_name__icontains=keyword))
+           sub = Sub_Category.objects.order_by('-sub_category_name').filter(Q(slug__icontains=keyword)|Q(sub_category_name__icontains=keyword))
+           products = Products.objects.order_by('-created_at').filter(Q(description__icontains=keyword)|Q(product_name__icontains=keyword))
+           
+           
+           print('kooooi')
+    #    else:
+        #    return redirect('users')
+   context = {
+           'users':users,
+           'categories':categories,
+           'sub':sub,
+           'products':products,
+
+         }       
+   return render(request,'admin_search.html',context)
+ 

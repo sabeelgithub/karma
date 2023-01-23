@@ -140,12 +140,16 @@
             </button>
             <ul class="navbar-nav w-100">
               <li class="nav-item w-100">
-                <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
+                <form  id="form" class="nav-link mt-2 mt-md-0 d-none d-lg-flex search" action="{% url 'admin_search' %}" method="GET">
                   <input
                     type="text"
                     class="form-control"
+                    id="search_input"
                     placeholder="Search products"
+                    name="keyword"
                   />
+                   <button type="submit" onclick="search()" class="btn btn-primary m-1" style="height:33px;width:74px;">search</button>
+                   
                 </form>
               </li>
             </ul>
@@ -206,5 +210,7 @@
     <!-- Custom js for this page -->
     <script src="{% static 'assets/js/dashboard.js'%}"></script>
     <!-- End custom js for this page -->
+    <!-- search -->
+    <script src="{% static 'js/search.js'%}"></script>
   </body>
 </html>

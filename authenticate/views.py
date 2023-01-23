@@ -4,6 +4,8 @@ from django.contrib.auth import login
 from .models import CustomUser
 from django.contrib import messages
 from .verify import send_otp, verify_otp
+from carts.models import Cart,CartItem
+from carts.views import _cart_id
 
 # Create your views here.
 def signup(request):
@@ -52,17 +54,33 @@ def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-        boss = CustomUser.objects.get(email=email)
-        if boss is not None:
-            if boss.is_active:
-              user = auth.authenticate(email=email,password=password)
+        #boss = CustomUser.objects.get(email=email)
+        user = auth.authenticate(email=email,password=password)
+        if user is not None:
+            if user.is_active:
+              try:
+                print('enterd in to try')
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                print(is_cart_item_exists)
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+                    print(cart_item)
+                    for item in cart_item:
+                        item.user = user
+                        item.save()
+                     
+              except:
+                print('enterd in to except')
+                pass
+              #user = auth.authenticate(email=email,password=password)
               auth.login(request,user)
               print('logged in')
               return redirect('home')
             else:
-               print('user blocked')
-               messages.error(request, 'You are Blocked !!')
-               return redirect('login')
+              print('user blocked')
+              messages.error(request, 'You are Blocked !!')
+              return redirect('login')
         else:
             print(' not logged in')
             messages.error(request, 'Invalid username or password !!')

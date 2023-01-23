@@ -40,6 +40,7 @@ def shop(request,sub_category_slug=None):
 def search(request):
    categories = Category.objects.all()
    sub = Sub_Category.objects.all()
+   products = None
    if 'keyword' in request.GET:
        keyword = request.GET['keyword']
        if keyword:
@@ -48,14 +49,14 @@ def search(request):
            print('kooooi')
        else:
            return redirect('shop')
-       context = {
+   context = {
           'products':products,
           'categories':categories,
           'sub':sub
 
         }       
-       return render(request,'shop.html',context)
-   return render(request,'shop.html')
+   return render(request,'shop.html',context)
+   
 def product_details(request,sub_category_slug,product_slug):
     try:
         single_product =Products.objects.get(sub_category__slug=sub_category_slug,slug=product_slug)
