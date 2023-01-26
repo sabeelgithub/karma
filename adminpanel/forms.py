@@ -1,6 +1,6 @@
 from django import forms
 from category.models import Category,Sub_Category
-from shop.models import Products
+from shop.models import Products,Variation
 class Update_categoryForm(forms.ModelForm):
     class Meta:
         model = Category
@@ -46,9 +46,6 @@ class ProductForm(forms.ModelForm):
             'is_available':'is available',
             'category':'category',
             'sub_category':'sub category',
-            
-
-
 
         }
 class Update_ProductForm(forms.ModelForm):
@@ -67,7 +64,28 @@ class Update_ProductForm(forms.ModelForm):
             'category':'category',
             'sub_category':'sub category',
            
+        }  
 
+class VariationForm(forms.ModelForm):
+    class Meta:
+        model = Variation
+        fields = ['product','variation_category','variation_value','is_active'] 
+        labels ={
+            'product':'product',
+            'variation_category':'variation category',
+            'variation_value':'variation value',
+            'is_active':'is active',
+            
+        }
 
-
-        }                                                                    
+class Update_VariationForm(forms.ModelForm):
+    class Meta:
+        model = Variation
+        fields = ['product','variation_category','variation_value','is_active'] 
+        labels ={
+            'product':'product',
+            'variation_category':'variation category',
+            'variation_value':'variation value',
+            'is_active':'is active',
+            
+        }

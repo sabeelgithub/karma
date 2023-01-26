@@ -3,8 +3,8 @@ from django.contrib.auth.models import User,auth
 from authenticate.models import CustomUser
 from django.contrib import messages
 from category.models import Category,Sub_Category
-from shop.models import Products
-from .forms import Update_categoryForm,CategoryForm,Update_sub_categoryForm,Sub_CategoryForm,ProductForm,Update_ProductForm
+from shop.models import Products,Variation
+from .forms import Update_categoryForm,CategoryForm,Update_sub_categoryForm,Sub_CategoryForm,ProductForm,Update_ProductForm,VariationForm,Update_VariationForm
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 from django.db.models import Q
 
@@ -245,3 +245,54 @@ def admin_search(request):
          }       
    return render(request,'admin_search.html',context)
  
+
+ # variation
+def variation(request):
+    variation = Variation.objects.all()
+    paginator = Paginator(variation,7)
+    page= request.GET.get('page')
+    paged_categories = paginator.get_page(page) 
+    context = {
+        'variation' : paged_categories,
+    }
+    return render(request,'variation.html',context)
+def delete_variation(request,id):
+    dlt = Variation.objects.get(pk=id)
+    dlt.delete()
+    return redirect('variation')
+def add_variation(request):
+    if request.method == 'POST':
+      form = VariationForm(request.POST)
+      if form.is_valid() :
+         
+         form.save()
+         messages.success(request, 'variation added successfully.')
+         return redirect('variation')
+      else:
+         messages.error(request, 'variation already exisist!!!')
+         return redirect('add_variation')
+         
+
+    
+    form = VariationForm()
+    context={
+        'form':form
+    }
+    return render(request,'add_product.html',context)
+def update_variation(request,id):
+    if request.method == 'POST':
+        update =Variation.objects.get(pk=id)
+        form = Update_VariationForm(request.POST,instance=update)
+        if form.is_valid():
+          form.save()
+          return redirect('variation')
+        else:
+            messages.error(request, 'category already exsist!!!')
+            return redirect('update_variation',id)
+    else:
+        update = Variation.objects.get(pk=id)
+        form = Update_VariationForm(instance=update)
+        context={
+            'form':form
+        }
+    return render(request,'update_variation.html',context)
