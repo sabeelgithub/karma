@@ -15,35 +15,37 @@
 </div>
 {% endif %}
 
-<a href="{% url 'add_variation' %}" class="btn btn-primary btn-md">Add</a>
-            {% if variation %}
-         <table class="table">
+
+            {% if orders %}
+         <table class="table table table-responsive">
             <thead>
               <tr>
                 <th scope="col">id</th>
-                <th scope="col">product</th>
-                <th scope="col">variation category</th>
-                <th scope="col">variation value</th>
-                <th scope="col">stock</th>
-                <th scope="col">available</th>
-                <th scope="col">created</th>
-                <th scope="col">action</th>
+                <th scope="col">name</th>
+                <th scope="col">email</th>
+                <th scope="col">phone</th>
+                <th scope="col">amount</th>
+                <th scope="col">payment mode</th>
+                <th scope="col">tracking id</th>
+                <th scope="col">status</th>
+                {% comment %} <th scope="col">action</th> {% endcomment %}
               </tr>
             </thead>
             <tbody>
-                {% for i in variation %}
+                {% for i in orders %}
                 
               <tr>
                 <th scope="row">{{i.id}}</th>
-                <td>{{i.product}}</td>
-                <td>{{i.variation_category}}</td>
-                <td>{{i.variation_value}}</td>
-                <td>{{i.stock}}</td>
-                <td>{{i.is_active}}</td>
-                <td>{{i.created_at}}</td>
+                <td>{{i.full_name}}</td>
+                <td>{{i.email}}</td>
+                <td>{{i.phone}}</td>
+                <td>₹{{i.order_total}}</td>
+                <td>{{i.payment.payment_method}}</td>
+                <td>{{i.order_number}}</td>
+                <td>{{i.status}}</td>
                 
-                <td><a href="{% url 'delete_variation' i.id%}" class="btn btn-danger btn-sm">Delete</a>
-                <a href="{% url 'update_variation' i.id%}" class="btn btn-warning btn-sm">Update</a></td>
+                {% comment %} <td><a href="" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
+                
                     
                     
                    
@@ -56,22 +58,22 @@
           {% endif %}
                 <!-- Start pagination -->
           <nav class="mb-3 mt-3" aria-label="page navigation sample">
-          {% if variation.has_other_pages %}
+          {% if orders.has_other_pages %}
             <ul class="pagination">
-            {% if variation.has_previous %}
-              <li class="page-item"><a class="page-link "href="?page={{variation.previous_page_number}}">Previous</a></li>
+            {% if orders.has_previous %}
+              <li class="page-item"><a class="page-link "href="?page={{orders.previous_page_number}}">Previous</a></li>
               {% else %}
               <li class="page-item disabled"><a class="page-link "href="#">Previous</a></li>
               {% endif %}
-              {% for i in variation.paginator.page_range %}
-              {% if variation.number == i %}
+              {% for i in orders.paginator.page_range %}
+              {% if orders.number == i %}
                <li class="page-item active"><a class="page-link "href="#">{{i}}</a></li>
                {% else %}
                <li class="page-item"><a class="page-link "href="?page={{i}}">{{i}}</a></li>
                {% endif %}
                {% endfor %}
-               {% if variation.has_next %}
-              <li class="page-item"><a class="page-link" href="?page={{variation.next_page_number}}">Next</a></li>
+               {% if orders.has_next %}
+              <li class="page-item"><a class="page-link" href="?page={{orders.next_page_number}}">Next</a></li>
               {% else %}
                <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
               {% endif %}

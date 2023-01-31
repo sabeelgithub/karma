@@ -129,297 +129,59 @@
       </div>
     </header>
     <!-- End Header Area -->
-    
-
-    <!-- Start Banner Area -->
-    <section class="banner-area organic-breadcrumb">
-      <div class="container">
-        <div
-          class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-          {% if 'search' in request.path %}
-          <div class="col-first">
-            <h1>search page</h1>
-            </div>
-            {% else %}
-          <div class="col-first">
-            <h1>Shop page</h1>
-            <nav class="d-flex align-items-center">
-              <a href="index.html"
-                >Home<span class="lnr lnr-arrow-right"></span
-              ></a>
-              <a href="#">Shop<span class="lnr"></span></a>
-             
-            </nav>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </section>
-    <!-- End Banner Area -->
-    <div class="container">
-      <div class="row">
-        <div class="col-xl-3 col-lg-4 col-md-5">
-          <div class="sidebar-categories">
-            <div class="head">Browse Categories</div>
-             {% for i in categories %}
-            <ul class="main-categories">
-              <li class="main-nav-list">
-                <a
-                  data-toggle="collapse"
-                  href="#{{i.category_name}}"
-                  aria-expanded="false"
-                  aria-controls="fruitsVegetable"><span class="lnr lnr-arrow-right"></span>{{i.category_name}}<span class="number"></span></a>
-                  {% for j in  sub %}
-                  {% if i.id == j.category.id %}
-                  
-
-                <ul class="collapse"
-                  id="{{i.category_name}}"
-                  data-toggle="collapse"
-                  aria-expanded="false"
-                  aria-controls="fruitsVegetable">
-                  <li class="main-nav-list child"><a href="{% url 'product_by_sub_category' j.slug %}">{{j.sub_category_name}}<span class="number"></span></a></li>
-                </ul>
-                {% endif %}
-                {% endfor %}
-              </li>
-            </ul>
-            {% endfor %}
-          </div>
-         </div>
-        <div class="col-xl-9 col-lg-8 col-md-7">
-         <!-- Start Filter Bar -->
-          <div class="filter-bar d-flex flex-wrap align-items-center">
-           
-          </div>
-          <!-- End Filter Bar -->
-         {% block content %}
-          
-                   <!-- Start Best Seller -->
-          <section class="lattest-product-area pb-40 category-list">
-            <div class="row">
-            {% if products %}
-            {% for k in  products %}
-            
-              <!-- single product -->
-              <div class="col-lg-4 col-md-6">
-                <div class="single-product">
-                 <a href="{{ k.get_url }}"> <img class="img-fluid" src="{{k.image1.url}}" alt=""/></a>
-                  <div class="product-details">
-                  <a href="{{ k.get_url }}"><h6>{{k.product_name}}</h6></a>
-                    <div class="price">
-                      <h6>₹{{k.price}}</h6>
-                      
-                    </div>
-                    <div class="prd-bottom">
-                      <a href="{{ k.get_url }}" class="social-info">
-                        <span class="ti-bag"></span>
-                        <p class="hover-text">cart</p>
-                      </a>
-                      <a href="" class="social-info">
-                        <span class="lnr lnr-heart"></span>
-                        <p class="hover-text">Wishlist</p>
-                      </a>
-                      <a href="" class="social-info">
-                        <span class="lnr lnr-sync"></span>
-                        <p class="hover-text">compare</p>
-                      </a>
-                      <a href="" class="social-info">
-                        <span class="lnr lnr-move"></span>
-                        <p class="hover-text">view more</p>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-         
-             {% endfor %}
-                   {% else %}
-          <h1 class= "text-center">No records</h1>
-          {% endif %}
-            </div>
-          </section>
-          <!-- End Best Seller -->
-         
-         
-         {% endblock %}
-          <!-- Start pagination -->
-          <nav class="mb-3" aria-label="page navigation sample">
-          {% if products.has_other_pages %}
-            <ul class="pagination">
-            {% if products.has_previous %}
-              <li class="page-item"><a class="page-link "href="?page={{products.previous_page_number}}">Previous</a></li>
-              {% else %}
-              <li class="page-item disabled"><a class="page-link "href="#">Previous</a></li>
-              {% endif %}
-              {% for i in products.paginator.page_range %}
-              {% if products.number == i %}
-               <li class="page-item active"><a class="page-link "href="#">{{i}}</a></li>
-               {% else %}
-               <li class="page-item"><a class="page-link "href="?page={{i}}">{{i}}</a></li>
-               {% endif %}
-               {% endfor %}
-               {% if products.has_next %}
-              <li class="page-item"><a class="page-link" href="?page={{products.next_page_number}}">Next</a></li>
-              {% else %}
-               <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
-              {% endif %}
-            </ul>
-            {% endif %}
-          </nav>
-          <!-- End pagination -->
-            <!-- Start Filter Bar -->
-          <div class="filter-bar d-flex flex-wrap align-items-center">
-           
-          </div>
-          <!-- End Filter Bar -->
-        </div>
-      </div>
+<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb" style="margin-bottom:0px">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Profile</h1>
+					<nav class="d-flex align-items-center">
+						<a href="">home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="">Profile</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area -->
+    <!-- start slide bar Area -->
+          {% if messages %}
+					<div id="messages" class="messages">
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show text-center"{% endif %} role="alert">
+        {% if message.level == DEFAdivT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+        </button>
     </div>
+    {% endfor %}
+</div>
+{% endif %}
+     <section class="login_box_area section_gap ">
+     <div class="container">
+     <div class="row d-flex justify-content-around">
+    <aside class="col-12 col-md-3 mb-3 ">
+    <ul class="list-group">
+    <a class="list-group-item  {% if '/userdash/' in request.path %}active{% endif %}"  href="{% url 'userdash' %}">Dashboard</a>
+     <a class="list-group-item {% if '/my_orders/' in request.path %}active{% endif %} " href="{% url 'my_orders' %}">My Orders</a>
+      <a class="list-group-item {% if '/edit_profile/' in request.path %}active{% endif %}" href="{% url 'edit_profile' %}">Edit Profile</a>
+       <a class="list-group-item  {% if '/change_password/' in request.path %}active{% endif %} " href="{% url 'change_password' %}">Change password</a>
+    </ul>
+    </aside>
 
-    <!-- Start related-product Area -->
-    <section class="related-product-area section_gap">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-6 text-center">
-            <div class="section-title">
-              <h1>Deals of the Week</h1>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-9">
-            <div class="row">
-              <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                <div class="single-related-product d-flex">
-                  <a href="#"><img src="{% static 'img/r1.jpg'%}" alt="" /></a>
-                  <div class="desc">
-                    <a href="#" class="title">Black lace Heels</a>
-                    <div class="price">
-                      <h6>$189.00</h6>
-                      <h6 class="l-through">$210.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                <div class="single-related-product d-flex">
-                  <a href="#"><img src="{% static 'img/r2.jpg'%}" alt="" /></a>
-                  <div class="desc">
-                    <a href="#" class="title">Black lace Heels</a>
-                    <div class="price">
-                      <h6>$189.00</h6>
-                      <h6 class="l-through">$210.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                <div class="single-related-product d-flex">
-                  <a href="#"><img src="{% static 'img/r3.jpg'%}" alt="" /></a>
-                  <div class="desc">
-                    <a href="#" class="title">Black lace Heels</a>
-                    <div class="price">
-                      <h6>$189.00</h6>
-                      <h6 class="l-through">$210.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                <div class="single-related-product d-flex">
-                  <a href="#"><img src="{% static 'img/r5.jpg'%}" alt="" /></a>
-                  <div class="desc">
-                    <a href="#" class="title">Black lace Heels</a>
-                    <div class="price">
-                      <h6>$189.00</h6>
-                      <h6 class="l-through">$210.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                <div class="single-related-product d-flex">
-                  <a href="#"><img src="{% static 'img/r6.jpg'%}" alt="" /></a>
-                  <div class="desc">
-                    <a href="#" class="title">Black lace Heels</a>
-                    <div class="price">
-                      <h6>$189.00</h6>
-                      <h6 class="l-through">$210.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
-                <div class="single-related-product d-flex">
-                  <a href="#"><img src="{% static 'img/r7.jpg'%}" alt="" /></a>
-                  <div class="desc">
-                    <a href="#" class="title">Black lace Heels</a>
-                    <div class="price">
-                      <h6>$189.00</h6>
-                      <h6 class="l-through">$210.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="single-related-product d-flex">
-                  <a href="#"><img src="{% static 'img/r9.jpg'%}" alt="" /></a>
-                  <div class="desc">
-                    <a href="#" class="title">Black lace Heels</a>
-                    <div class="price">
-                      <h6>$189.00</h6>
-                      <h6 class="l-through">$210.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="single-related-product d-flex">
-                  <a href="#"><img src="{% static 'img/r10.jpg'%}" alt="" /></a>
-                  <div class="desc">
-                    <a href="#" class="title">Black lace Heels</a>
-                    <div class="price">
-                      <h6>$189.00</h6>
-                      <h6 class="l-through">$210.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-4 col-sm-6">
-                <div class="single-related-product d-flex">
-                  <a href="#"><img src="{% static 'img/r11.jpg'%}" alt="" /></a>
-                  <div class="desc">
-                    <a href="#" class="title">Black lace Heels</a>
-                    <div class="price">
-                      <h6>$189.00</h6>
-                      <h6 class="l-through">$210.00</h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3">
-            <div class="ctg-right">
-              <a href="#" target="_blank">
-                <img
-                  class="img-fluid d-block mx-auto"
-                  src="{% static 'img/category/c5.jpg'%}"
-                  alt=""
-                />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+
+    
+{%block content%}{%endblock%}
+
+</div>
+
+
+
+<div>
+     
     </section>
-    <!-- End related-product Area -->
-
+    <!-- End slide bar Area -->
+   
   <!-- start footer Area -->
     <footer class="footer-area section_gap">
       <div class="container">
@@ -661,3 +423,6 @@
     
   </body>
 </html>
+
+
+

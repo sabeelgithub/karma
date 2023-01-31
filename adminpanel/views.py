@@ -4,6 +4,7 @@ from authenticate.models import CustomUser
 from django.contrib import messages
 from category.models import Category,Sub_Category
 from shop.models import Products,Variation
+from order.models import Order
 from .forms import Update_categoryForm,CategoryForm,Update_sub_categoryForm,Sub_CategoryForm,ProductForm,Update_ProductForm,VariationForm,Update_VariationForm
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 from django.db.models import Q
@@ -296,3 +297,14 @@ def update_variation(request,id):
             'form':form
         }
     return render(request,'update_variation.html',context)
+
+# oreder history
+def orders(request):
+    orders = Order.objects.filter(is_ordered=True).order_by('-id') 
+    paginator = Paginator(orders,7)
+    page= request.GET.get('page')
+    paged_categories = paginator.get_page(page) 
+    context = {
+        'orders': paged_categories
+    }
+    return render(request,'orders.html',context)

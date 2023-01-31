@@ -82,15 +82,15 @@
           <li class="nav-item nav-category">
             <span class="nav-link">Navigation</span>
           </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="{% url 'dashbord'%}">
+          <li class="nav-item menu-items {% if '/dashbord/' in request.path %}active{% endif %}">
+            <a class="nav-link " href="{% url 'dashbord'%}">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if '/users/' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'users'%}">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
@@ -98,7 +98,7 @@
               <span class="menu-title">Users</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if '/admincategory/' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'admincategory'%}">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
@@ -106,7 +106,7 @@
               <span class="menu-title">Category</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if '/adminsub_category/' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'adminsub_category' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
@@ -114,7 +114,7 @@
               <span class="menu-title">Sub category</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if '/adminproduct/' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'adminproduct' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
@@ -122,12 +122,20 @@
               <span class="menu-title">Product</span>
             </a>
           </li>
-          <li class="nav-item menu-items">
+          <li class="nav-item menu-items {% if '/variation/' in request.path %}active{% endif %}">
             <a class="nav-link" href="{% url 'variation' %}">
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
               <span class="menu-title">variation</span>
+            </a>
+          </li>
+          <li class="nav-item menu-items {% if '/orders/' in request.path %}active{% endif %}">
+            <a class="nav-link" href="{% url 'orders' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+              <span class="menu-title">orders</span>
             </a>
           </li>
         </ul>

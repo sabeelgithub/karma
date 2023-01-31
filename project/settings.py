@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'category',
     'shop',
     'carts',
+    'order',
     'crispy_forms',
     
     

@@ -34,6 +34,7 @@ class CustomUserManager(BaseUserManager):
             raise ValueError('Superuser must have is_superuser=True.')
 
         return self._create_user(email, phone,password, **extra_fields)
+        
 
 
 class CustomUser(AbstractUser):
@@ -44,3 +45,6 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['phone']
 
     objects = CustomUserManager()
+
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'

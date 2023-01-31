@@ -53,7 +53,7 @@
                             {% endif %}
 						</ul>
 						<p>{{single_product.description}}.</p>
-						<div class="item-option-select">
+						<div class="item-option-select" style="height: 87px;margin-top:-27px;">
 						<h6>choose color</h6>
 						<select name="color" class="form-control" required >
 						<option value="" disabled selected >select</option>
@@ -63,7 +63,9 @@
 						</select>
 
 						</div>
-						<div class="item-option-select">
+						<div class="item-option-select" >   
+    
+
 						<h6>choose size</h6>
 						<select name="size" class="form-control" required >
 						<option value="" disabled selected >select</option>
@@ -78,10 +80,10 @@
                         <h5 class="text-danger m-2">Out of Stock</h5>
                         {% else %}
 						
-							<button type ="submit" class="primary-btn" >Add to Cart</button>
+							<button type ="submit" class="primary-btn" style="margin-top: 35px;margin-left: -87px;" >Add to Cart</button>
 							  
                             {% endif %}
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+							<a class="icon_btn mt-4" style="margin: -12px;margin-left: 3px;" href="#"><i class="lnr lnr lnr-heart"></i></a>
 						</div>
 						</form>
 					</div>

@@ -198,7 +198,7 @@
 								</div>
 								<div class="prd-bottom">
 
-									<a href="{% url 'add_cart' k.id %}" class="social-info">
+									<a href="{{ k.get_url }}" class="social-info">
 										<span class="ti-bag"></span>
 										<p class="hover-text">cart</p>
 									</a>

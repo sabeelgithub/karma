@@ -23,5 +23,6 @@ urlpatterns = [
     path('variation/', views.variation,name='variation'), 
     path('<int:id>/delete_variation/', views.delete_variation,name='delete_variation'),
     path('<int:id>/update_variation/', views.update_variation,name='update_variation'),
-    path('add_variation/', views.add_variation,name='add_variation'),   
+    path('add_variation/', views.add_variation,name='add_variation'),
+    path('orders/', views.orders,name='orders'),      
 ]

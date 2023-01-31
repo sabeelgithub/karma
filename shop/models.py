@@ -11,7 +11,6 @@ class Products(models.Model):
     image1 = models.ImageField(upload_to='potos/product')
     image2 = models.ImageField(upload_to='potos/product')
     image3 = models.ImageField(upload_to='potos/product')
-    stock = models.IntegerField()
     is_available = models.BooleanField()
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     sub_category = models.ForeignKey(Sub_Category,on_delete=models.CASCADE)
@@ -36,6 +35,7 @@ class  Variation(models.Model):
      product = models.ForeignKey(Products,on_delete=models.CASCADE)
      variation_category = models.CharField(max_length=100,choices=variation_category_choices)
      variation_value = models.CharField(max_length=100)
+     stock = models.IntegerField()
      is_active = models.BooleanField(default=True)
      created_at =  models.DateField(auto_now=True)
 
