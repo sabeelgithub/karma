@@ -1,6 +1,7 @@
 from django import forms
 from category.models import Category,Sub_Category
 from shop.models import Products,Variation
+from order.models import Coupon
 class Update_categoryForm(forms.ModelForm):
     class Meta:
         model = Category
@@ -91,3 +92,24 @@ class Update_VariationForm(forms.ModelForm):
             'is_active':'is active',
             
         }
+
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+class CouponForm(forms.ModelForm):
+    class Meta:
+        model = Coupon
+        fields = ['code', 'discount','min_value','valid_at','active']
+        widgets = {
+                    'valid_at': DateInput(),
+                    }
+        labels ={
+            'code':'Coupon Code',
+            'discount':'Discount',
+            'min_value':'Minimum Value',
+            'valid_at':'Expiry Date',
+            'active':'Available',
+            
+        }        

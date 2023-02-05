@@ -1,12 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from shop.models import Products
 from authenticate.models import CustomUser
-from order.models import Order,OrderProduct
+from order.models import Order,OrderProduct,Address
 from .models import UserProfile
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 from authenticate.forms import CustomUserForm,UserProfileForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from .forms import AddressForm
 
 # Create your views here.
 def index(request):
@@ -82,7 +83,7 @@ def change_password(request):
 
 @login_required(login_url='login')
 def my_orders(request):
-    orders = Order.objects.filter(user=request.user,is_ordered=True).order_by('-created_at')
+    orders = Order.objects.filter(user=request.user,is_ordered=True).order_by('-id')
     paginator = Paginator(orders,8)
     page= request.GET.get('page')
     paged_users = paginator.get_page(page)
@@ -113,3 +114,111 @@ def order_details(request,order_id):
         'grand_total_shipping':grand_total_shipping,
     }
     return render(request,'order_details.html',context)
+
+@login_required(login_url='login')
+def myAddress(request):
+  current_user = request.user
+  address = Address.objects.filter(user=current_user)
+  paginator = Paginator(address,3)
+  page= request.GET.get('page')
+  paged_address = paginator.get_page(page)
+  
+  context = {
+    'address':paged_address,
+  }
+  return render(request,'myAddress.html', context)
+
+@login_required(login_url='login')
+def addAddress(request):
+    if request.method == 'POST':
+        form = AddressForm(request.POST,request.FILES,)
+        if form.is_valid():
+            print('form is valid')
+            detail = Address()
+            detail.user = request.user
+            detail.first_name =form.cleaned_data['first_name']
+            detail.last_name = form.cleaned_data['last_name']
+            detail.phone =  form.cleaned_data['phone']
+            detail.email =  form.cleaned_data['email']
+            detail.address_line1 =  form.cleaned_data['address_line1']
+            detail.address_line2  = form.cleaned_data['address_line2']
+            detail.state =  form.cleaned_data['state']
+            detail.city =  form.cleaned_data['city']
+            detail.save()
+            messages.success(request,'Address added Successfully')
+            return redirect('myAddress')
+        else:
+            messages.success(request,'Form is Not valid')
+            return redirect('myAddress')
+    else:
+        form = AddressForm()
+        context={
+            'form':form
+        }    
+    return render(request,'addAddress.html',context)
+
+@login_required(login_url='login')
+def deleteAddress(request,id):
+    address=Address.objects.get(id = id)
+    messages.success(request,"Address Deleted")
+    address.delete()
+    return redirect('myAddress')
+
+@login_required(login_url='login')
+def editAddress(request, id):
+  address = Address.objects.get(id=id)
+  if request.method == 'POST':
+    form = AddressForm(request.POST, instance=address)
+    if form.is_valid():
+      form.save()
+      messages.success(request , 'Address Updated Successfully')
+      return redirect('myAddress')
+    else:
+      messages.error(request , 'Invalid Inputs!!!')
+      return redirect('myAddress')
+  else:
+      form = AddressForm(instance=address)
+      
+  context = {
+            'form' : form,
+        }
+  return render(request , 'editAddress.html' , context)
+
+
+
+
+#checkout
+def deleteCheckoutAddress(request,id):
+    address=Address.objects.get(id = id)
+    messages.success(request,"Address Deleted")
+    address.delete()
+    return redirect('checkout')
+
+
+
+
+def AddCheckoutAddress(request):
+    if request.method == 'POST':
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            print('form is valid')
+            detail = Address()
+            detail.user = request.user
+            detail.first_name =form.cleaned_data['first_name']
+            detail.last_name = form.cleaned_data['last_name']
+            detail.phone =  form.cleaned_data['phone']
+            detail.email =  form.cleaned_data['email']
+            detail.address_line1 =  form.cleaned_data['address_line1']
+            detail.address_line2  = form.cleaned_data['address_line2']
+            detail.state =  form.cleaned_data['state']
+            detail.city =  form.cleaned_data['city']
+            detail.save()
+            messages.success(request,'Address added Successfully')
+            return redirect('checkout')
+        else:
+            messages.success(request,'Form is Not valid')
+            return redirect('checkout')
+  
+
+
+

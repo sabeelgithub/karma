@@ -138,6 +138,14 @@
               <span class="menu-title">orders</span>
             </a>
           </li>
+            <li class="nav-item menu-items {% if '/coupon/' in request.path %}active{% endif %}">
+            <a class="nav-link" href="{% url 'coupon' %}">
+              <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+              </span>
+              <span class="menu-title">Coupon</span>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- partial -->

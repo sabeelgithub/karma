@@ -1,11 +1,11 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse
-from .models import Order,Payment
+from .models import Order,Payment,Address
 from shop.models import Variation
 from carts.models import CartItem
 from .forms import OrderForm
 import datetime
-from .models import Payment,OrderProduct
+from .models import Payment,OrderProduct,Order,Coupon,UserCoupon
 import json
 
 # Create your views here.
@@ -98,6 +98,69 @@ def payments_completed(request):
       print('kashtam')
       return redirect('home')
    
+# def place_order(request,total=0,quantity=0):
+#     current_user = request.user
+
+#     # if the cart count is less than or equal to 0,then redirect back to shop
+#     cart_items = CartItem.objects.filter(user=current_user)
+#     cart_count = cart_items.count()
+#     if cart_count <= 0:
+#       return redirect('shop')
+    
+#     grand_total = 0
+#     tax = 0
+#     for cart_item in cart_items:
+#        total += (cart_item.product.price * cart_item.quantity)
+#        quantity += cart_item.quantity
+#     tax =(2 * total)/100
+#     grand_total = total + tax     
+    
+#     if request.method == 'POST':
+#        form = OrderForm(request.POST)
+#        if form.is_valid():
+#           # store all the billing information inside order table
+#           data = Order()
+#           data.user = current_user
+#           data.first_name = form.cleaned_data['first_name']
+#           data.last_name = form.cleaned_data['last_name']
+#           data.phone = form.cleaned_data['phone']
+#           data.email = form.cleaned_data['email']
+#           data.address_line_1 = form.cleaned_data['address_line_1']
+#           data.address_line_2 = form.cleaned_data['address_line_2']
+#           data.country = form.cleaned_data['country']
+#           data.state = form.cleaned_data['state']
+#           data.city = form.cleaned_data['city']
+#           data.order_note = form.cleaned_data['order_note']
+#           data.order_total = grand_total
+#           data.tax = tax 
+#           data.ip = request.META.get('REMOTE_ADDR')
+#           data.save()
+
+#           # generate order number
+#           yr = int(datetime.date.today().strftime('%Y'))
+#           dt = int(datetime.date.today().strftime('%d'))
+#           mt = int(datetime.date.today().strftime('%m'))
+#           d = datetime.date(yr,mt,dt)
+#           current_date = d.strftime("%Y%m%d")
+#           order_number = current_date + str(data.id)
+#           data.order_number = order_number
+#           data.save()
+
+#           order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
+#           context={
+#              'order':order,
+#              'cart_items':cart_items,
+#              'total':total,
+#              'tax':tax,
+#              'grand_total':grand_total,
+#              'order_number':order_number
+
+#           }
+#           return render(request,'payments.html',context)
+#        else:
+#           print('form not valid')
+#           return redirect('checkout')
+       
 def place_order(request,total=0,quantity=0):
     current_user = request.user
 
@@ -113,24 +176,26 @@ def place_order(request,total=0,quantity=0):
        total += (cart_item.product.price * cart_item.quantity)
        quantity += cart_item.quantity
     tax =(2 * total)/100
-    grand_total = total + tax     
+    grand_total = total + tax    
+
+    
+
     
     if request.method == 'POST':
-       form = OrderForm(request.POST)
-       if form.is_valid():
-          # store all the billing information inside order table
+          id = request.POST['flexRadioDefault']
+          address  = Address.objects.get(user = request.user,id = id)
           data = Order()
           data.user = current_user
-          data.first_name = form.cleaned_data['first_name']
-          data.last_name = form.cleaned_data['last_name']
-          data.phone = form.cleaned_data['phone']
-          data.email = form.cleaned_data['email']
-          data.address_line_1 = form.cleaned_data['address_line_1']
-          data.address_line_2 = form.cleaned_data['address_line_2']
-          data.country = form.cleaned_data['country']
-          data.state = form.cleaned_data['state']
-          data.city = form.cleaned_data['city']
-          data.order_note = form.cleaned_data['order_note']
+          data.first_name = address.first_name
+          data.last_name = address.last_name
+          data.phone = address.phone
+          data.email = address.email
+          data.address_line_1 = address.address_line1
+          data.address_line_2 = address.address_line2
+          data.state = address.state
+          data.city = address.city
+          data.country = address.country
+          data.order_note = address.order_note
           data.order_total = grand_total
           data.tax = tax 
           data.ip = request.META.get('REMOTE_ADDR')
@@ -147,20 +212,23 @@ def place_order(request,total=0,quantity=0):
           data.save()
 
           order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
+
+
           context={
              'order':order,
              'cart_items':cart_items,
              'total':total,
              'tax':tax,
              'grand_total':grand_total,
-             'order_number':order_number
+             'order_number':order_number,
+             
 
           }
           return render(request,'payments.html',context)
-       else:
+    else:
           print('form not valid')
           return redirect('checkout')
-       
+
 def cash_on_delivery(request,id):
    # Move cart item to ordered product table
    try:
@@ -245,4 +313,123 @@ def cash_on_delivery(request,id):
       print(e)
       return redirect('home')
       
+
+
+def cancel_order(request,id):
+    if request.user.is_superuser:
+      order = Order.objects.get(order_number = id)
+    else:
+      order = Order.objects.get(order_number = id,user = request.user)
+    order.status = "Cancelled"
+    order.save()
+    payment = Payment.objects.get(order_id = order.order_number)
+    payment.delete()
+    order_product = OrderProduct.objects.get(user=request.user,order=order)
+    print(order_product.variations)
+    variation = Variation.objects.filter(id__in= order_product.variations.all())
+    print(variation)
+    for var in variation:
+         var.stock += order_product.quantity
+         var.save()
+         print('ann')
+    if request.user.is_superuser:
+      return redirect('orders')
+    else:
+      return redirect('my_orders')
+    
+
+def return_order(request, id):
+  print("loooooo")
+  if request.method == 'POST':
+    print('helloooooooooooooooo')
+    return_reason = request.POST['return_reason']
+  print(return_reason)
+  order = Order.objects.get(order_number = id,user = request.user)
+  order.status = "Returned"
+  order.is_returned = True
+  order.return_reason = return_reason
+  order.save()
+  payment = Payment.objects.get(order_id = order.order_number)
+  print("order get")
+  payment.delete()
+  order_product = OrderProduct.objects.get(user=request.user,order=order)
+  print(order_product.variations)
+  variation = Variation.objects.filter(id__in= order_product.variations.all())
+  print(variation)
+  for var in variation:
+         var.stock += order_product.quantity
+         var.save()
+         print('ann')
+
+         
+
+  return redirect('my_orders')
+
+
+
+
+
+# def coupon(request):
+#   if request.method == 'POST':
+#     coupon_code = request.POST['coupon']
+#     grand_total = request.POST['grand_total']
+#     coupon_discount = 0
+#     try:
+#       instance = UserCoupon.objects.get(user = request.user ,coupon__code = coupon_code)
+
+#       if float(grand_total) >= float(instance.coupon.min_value):
+#         coupon_discount = ((float(grand_total) * float(instance.coupon.discount))/100)
+#         grand_total = float(grand_total) - coupon_discount
+#         grand_total = format(grand_total, '.2f')
+#         coupon_discount = format(coupon_discount, '.2f')
+#         msg = 'Coupon Applied successfully'
+#         instance.used = True
+#         instance.save()
+#       else:
+#           msg='This coupon is only applicable for orders more than ₹'+ str(instance.coupon.min_value)+ '\- only!'
+#     except:
+#             msg = 'Coupon is not valid'
+#     response = {
+#                'grand_total': grand_total,
+#                'msg':msg,
+#                'coupon_discount':coupon_discount,
+#                'coupon_code':coupon_code,
+#                 }
+
+#   return JsonResponse(response)
+
+
+
+
+
+
+def coupons(request):
+  if request.method == 'POST':
+    coupon_code = request.POST['coupon']
+    grand_total = request.POST['grand_total']
+    coupon_discount = 0
+    try:
+      instance = UserCoupon.objects.get(user = request.user ,coupon__code = coupon_code)
+
+      if float(grand_total) >= float(instance.coupon.min_value):
+        coupon_discount = ((float(grand_total) * float(instance.coupon.discount))/100)
+        grand_total = float(grand_total) - coupon_discount
+        grand_total = format(grand_total, '.2f')
+        coupon_discount = format(coupon_discount, '.2f')
+        msg = 'Coupon Applied successfully'
+        instance.used = True
+        instance.save()
+      else:
+          msg='This coupon is only applicable for orders more than ₹'+ str(instance.coupon.min_value)+ '\- only!'
+    except:
+            msg = 'Coupon is not valid'
+    response = {
+               'grand_total': grand_total,
+               'msg':msg,
+               'coupon_discount':coupon_discount,
+               'coupon_code':coupon_code,
+                }
+
+  return JsonResponse(response)
+
 

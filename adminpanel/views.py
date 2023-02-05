@@ -1,11 +1,11 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User,auth
 from authenticate.models import CustomUser
 from django.contrib import messages
 from category.models import Category,Sub_Category
 from shop.models import Products,Variation
-from order.models import Order
-from .forms import Update_categoryForm,CategoryForm,Update_sub_categoryForm,Sub_CategoryForm,ProductForm,Update_ProductForm,VariationForm,Update_VariationForm
+from order.models import Order,Payment,Coupon
+from .forms import Update_categoryForm,CategoryForm,Update_sub_categoryForm,Sub_CategoryForm,ProductForm,Update_ProductForm,VariationForm,Update_VariationForm,CouponForm
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 from django.db.models import Q
 
@@ -189,8 +189,6 @@ def add_product(request):
       else:
          messages.error(request, 'product already exisist!!!')
          return redirect('add_product')
-         
-
     
     form = ProductForm()
     context={
@@ -252,9 +250,9 @@ def variation(request):
     variation = Variation.objects.all()
     paginator = Paginator(variation,7)
     page= request.GET.get('page')
-    paged_categories = paginator.get_page(page) 
+    paged_variation = paginator.get_page(page) 
     context = {
-        'variation' : paged_categories,
+        'variation' : paged_variation,
     }
     return render(request,'variation.html',context)
 def delete_variation(request,id):
@@ -273,13 +271,11 @@ def add_variation(request):
          messages.error(request, 'variation already exisist!!!')
          return redirect('add_variation')
          
-
-    
     form = VariationForm()
     context={
         'form':form
     }
-    return render(request,'add_product.html',context)
+    return render(request,'add_variation.html',context)
 def update_variation(request,id):
     if request.method == 'POST':
         update =Variation.objects.get(pk=id)
@@ -300,11 +296,82 @@ def update_variation(request,id):
 
 # oreder history
 def orders(request):
-    orders = Order.objects.filter(is_ordered=True).order_by('-id') 
+    orders = Order.objects.filter(is_ordered=True).order_by('-id')
     paginator = Paginator(orders,7)
     page= request.GET.get('page')
-    paged_categories = paginator.get_page(page) 
+    paged_orders = paginator.get_page(page) 
     context = {
-        'orders': paged_categories
+        'orders': paged_orders
     }
     return render(request,'orders.html',context)
+
+def update_order(request, id):
+  if request.method == 'POST':
+    order = get_object_or_404(Order, id=id)
+    status = request.POST.get('status')
+    order.status = status 
+    order.save()
+    if status  == "Delivered":
+      try:
+          payment = Payment.objects.get(payment_id = order.order_number, status = False)
+          print(payment)
+          if payment.payment_method == 'Cash on Delivery':
+              payment.status = True
+              payment.save()
+      except:
+          pass
+    order.save()
+    
+  return redirect('orders')
+
+
+#coupon
+def coupon(request):
+    coupons = Coupon.objects.all()
+    context = {
+        'coupons':coupons
+    }
+    return render(request,'coupon.html',context)
+
+
+def addCoupon(request):
+    if request.method == 'POST':
+      form = CouponForm(request.POST)
+      if form.is_valid() :
+         
+         form.save()
+         messages.success(request, 'Coupon added successfully.')
+         return redirect('coupon')
+      else:
+         messages.error(request, 'Coupon already exisist!!!')
+         return redirect('addCoupon')
+      
+    form = CouponForm()
+    context={
+        'form':form
+    }
+    return render(request,'addCoupon.html',context)  
+
+
+def deleteCoupon(request,id):
+    dlt = Coupon.objects.get(pk=id)
+    dlt.delete()
+    return redirect('coupon')
+
+def updateCoupon(request,id):
+    if request.method == 'POST':
+        update = Coupon.objects.get(pk=id)
+        form = CouponForm(request.POST,instance=update)
+        if form.is_valid():
+          form.save()
+          return redirect('coupon')
+        else:
+            messages.error(request, 'Coupon already exsist!!!')
+            return redirect('updateCoupon',id)
+    else:
+        update = Coupon.objects.get(pk=id)
+        form = CouponForm(instance=update)
+        context={
+            'form':form
+        }
+    return render(request,'update_variation.html',context)

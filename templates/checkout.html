@@ -1,167 +1,367 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block content%}
+{% extends 'base.html' %} {% load static %} {% block content%}
 <!-- Start Banner Area -->
-    <section class="banner-area organic-breadcrumb">
-        <div class="container">
-            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-                <div class="col-first">
-                    <h1>Checkout</h1>
-                    <nav class="d-flex align-items-center">
-                        <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-                        <a href="single-product.html">Checkout</a>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- End Banner Area -->
-     <!--================Checkout Area =================-->
-    <section class="checkout_area section_gap">
-        <div class="container">
-            
-            <div class="cupon_area">
-                <div class="check_title">
-                    <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
-                </div>
-                <input type="text" placeholder="Enter coupon code">
-                <a class="tp_btn" href="#">Apply Coupon</a>
-            </div>
-            <div class="billing_details">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <h3>Billing Details</h3>
-                        <form class="row contact_form" action="{% url 'place_order' %}" method="post">
-                         {% csrf_token %}
-                         
-                            <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="first" name="first_name" placeholder="First name" required>
-                                {% comment %} <span class="placeholder" data-placeholder="First name"></span> {% endcomment %}
-                            </div>
-                            
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div
+      class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end"
+    >
+      <div class="col-first">
+        <h1>Checkout</h1>
+        <nav class="d-flex align-items-center">
+          <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="single-product.html">Checkout</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Banner Area -->
+<!--================Checkout Area =================-->
+<section class="checkout_area section_gap">
+ <div class="container">
+                  {% if messages %}
+                        <div id="messages" class="messages">
+                  {% for message in messages %}
+                  <div {% if message.tags %} class="alert alert-{{ message.tags }} alert-dismissible fade show text-center"{% endif %} role="alert">
+                      {% if message.level == DEFAdivT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                      {{ message }}
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  {% endfor %}
+              </div>
+              {% endif %}
 
-                            <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="last" name="last_name" placeholder="Last name"  required>
-                                {% comment %} <span class="placeholder" data-placeholder="Last name"></span> {% endcomment %}
-                            </div>
-                            {% comment %} <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="company" name="company" placeholder="Company name">
-                            </div> {% endcomment %}
-                            <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="number" name="phone" placeholder="Mob" required>
-                                {% comment %} <span class="placeholder" data-placeholder="Phone number"></span> {% endcomment %}
-                            </div>
-                            <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="email" name="email" placeholder="Email" required>
-                                {% comment %} <span class="placeholder" data-placeholder="Email Address"></span> {% endcomment %}
-                            </div>
-                             
-                            {% comment %} <div class="col-md-12 form-group p_star">
-                                <select class="country_select" required>
-                                    <option value="1">Country</option>
-                                    <option value="2">Country</option>
-                                    <option value="4">Country</option>
-                                </select>
-                            </div> {% endcomment %}
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="add1" name="address_line_1" placeholder="Address line 01" required>
-                                {% comment %} <span class="placeholder" data-placeholder="Address line 01"></span> {% endcomment %}
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="add2" name="address_line_2" placeholder="Address line 01" required>
-                                {% comment %} <span class="placeholder" data-placeholder="Address line 02"></span> {% endcomment %}
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="country" name="country" placeholder="Country" required>
-                                {% comment %} <span class="placeholder" data-placeholder="Town/City"></span> {% endcomment %}
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="state" name="state" placeholder="State" required>
-                                {% comment %} <span class="placeholder" data-placeholder="Town/City"></span> {% endcomment %}
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="city" name="city" placeholder="City" required>
-                                {% comment %} <span class="placeholder" data-placeholder="Town/City"></span> {% endcomment %}
-                            </div>
-                             <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="order_note" name="order_note" placeholder="Notes">
-                                {% comment %} <span class="placeholder" data-placeholder="Town/City"></span> {% endcomment %}
-                            </div>
-                            {% comment %} <div class="col-md-12 form-group p_star">
-                                <select class="country_select" required>
-                                    <option value="1">District</option>
-                                    <option value="2">District</option>
-                                    <option value="4">District</option>
-                                </select>
-                            </div> {% endcomment %}
-                            {% comment %} <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="zip" name="zip" placeholder="Postcode/ZIP">
-                            </div> {% endcomment %}
-                            {% comment %} <div class="col-md-12 form-group">
-                                <div class="creat_account">
-                                    <input type="checkbox" id="f-option2" name="selector">
-                                    <label for="f-option2">Create an account?</label>
-                                </div>
-                            </div> {% endcomment %}
-                            {% comment %} <div class="col-md-12 form-group">
-                                <div class="creat_account">
-                                    <h3>Shipping Details</h3>
-                                    <input type="checkbox" id="f-option3" name="selector">
-                                    <label for="f-option3">Ship to a different address?</label>
-                                </div>
-                                <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea>
-                            </div> {% endcomment %}
-                        {% comment %} </form> {% endcomment %}
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="order_box mt-5 pt-5">
-                            <h2>Your Order</h2>
-                            
-                            <ul class="list">
-                            
-                                <li><a href="#">Product<span>Total</span></a></li>
-                                {% for cart_item in cart_items %}
-                                <li><a href="#">{{ cart_item.product.product_name }}<span class="middle">x {{ cart_item.quantity }}</span> <span class="last">₹{{ cart_item.sub_total }}</span></a></li>
 
-                             {% endfor %}
-                            <ul class="list list_2">
-                                <li><a href="#">Net total <span>₹{{total}}</span></a></li>
-                                <li><a href="#">tax <span>Flat rate: ₹{{tax}}</span></a></li>
-                                <li><a href="#">Grand total <span>₹{{grand_total}}</span></a></li>
-                            </ul>
-                            {% comment %} <div class="payment_item">
-                                <div class="radion_btn">
-                                    <input type="radio" id="f-option5" name="selector">
-                                    <label for="f-option5">Check payments</label>
-                                    <div class="check"></div>
-                                </div>
-                                <p>Please send a check to Store Name, Store Street, Store Town, Store State / County,
-                                    Store Postcode.</p>
-                            </div> {% endcomment %}
-                            {% comment %} <div class="payment_item active">
-                                <div class="radion_btn">
-                                    <input type="radio" id="f-option6" name="selector">
-                                    <label for="f-option6">Paypal </label>
-                                    <img src="{% static 'img/product/card.jpg' %}" alt="">
-                                    <div class="check"></div>
-                                </div>
-                                <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
-                                    account.</p>
-                            </div> {% endcomment %}
-                            {% comment %} <div class="creat_account">
-                                <input type="checkbox" id="f-option4" name="selector">
-                                <label for="f-option4">I’ve read and accept the </label>
-                                <a href="#">terms & conditions*</a>
-                            </div> {% endcomment %}
-                            {% comment %} <a class="primary-btn" type="submit" href="#">Proceed to Paypal</a> {% endcomment %}
-                            <button type ="submit" class="primary-btn" style="width:294px;height:45px;" >place order</button>
+
+
+
+
+
+              <div class="">
+              <div class="col-12 col-md-4">
+               <div class="shoping__continue">
+                            <div class="shoping__discount">
+                                <h5>Discount Codes</h5>
+                                <form id="coupon_form">
+                                    <input type="text" id="coupon_data" placeholder="Enter your coupon code">
+                                    <button type="submit" class="site-btn">APPLY COUPON</button>
+                                </form>
+                            </div>
+                            <p class="text-danger mt-3" id="output"></p>
                         </div>
-                    </div>
-                    </form>
-                </div>
+                {% comment %} <div class="cupon_area mx-1">
+                  <div class="check_title">
+                    <h3>Coupon Area</h3>
+                  </div>
+                  <form id="coupon_form">
+                  <input type="text" id="coupon_data" placeholder="Enter coupon code" />
+                 <a class="tp_btn" type="submit" >Apply Coupon</a>
+        
+                  </form>
+                </div> {% endcomment %}
+                <p class="text-danger mt-3" id="output"></p>
+              </div>
             </div>
+
+
+             {% if coupons %}
+            <div class="accordion mt-3 shoping__discount" id="accordionExample">
+                            <h5>Available Coupons:</h5>
+                            
+                            {% for item in coupons %}
+
+                            <div class="card w-75">
+                              <div class="card-header" id="headingThree">
+                                <h2 class="mb-0">
+                                  <button class="btn btn-link btn-block text-left collapsed text-danger text-decoration-none" type="button" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapseThree">
+                                    <span class="text-dark">{{forloop.counter}}.</span> <b>-{{item.coupon.discount}}% Off</b>
+                                  </button>
+                                </h2>
+                              </div>
+                              <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <p><b>*</b>Applicable only  for order price more than <b>₹{{item.coupon.min_value}}\-</b></p>
+                                    <span class="ml-3">Coupon Code: <b class="text-danger">{{item.coupon.code}}</b></span>
+                                </div>
+                              </div>
+                            </div>
+                           {% endfor %}
+                            </div>
+                          {%endif%}
+
+
+
+
+
+    <form
+      class="row contact_form"
+      action="{% url 'place_order' %}"
+      method="post">
+      {% csrf_token %}
+
+      <div class="billing_details container">
+        <div class="row">
+          <div class="col-12 col-md-12 col-lg-12">
+            <h3>Billing Details</h3>
+
+            <p class="">
+              <a
+                class="btn btn-primary m-3"
+                data-toggle="collapse"
+                href="#collapseExample"
+                role="button"
+                aria-expanded="false"
+                aria-controls="collapseExample">Address
+              </a>
+
+              
+            
+              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#a{{i.id}}">
+                 Add Address
+              </button>
+
+
+
+
+             
+            </p>
+            <div class="collapse" id="collapseExample">
+              <div class="row mx-3 d-flex justify-content-between">
+                {% for item in address %}
+                <div class="form-check">
+                {% if forloop.counter == 1 %}
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    value="{{item.id}}"
+                    id="flexRadioDefault1" checked/>
+                    {% else %}
+                    <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    value="{{item.id}}"
+                    id="flexRadioDefault1"/>
+                    {% endif %}
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    <div
+                      class="collapse mb-5"
+                      id="collapseExample"
+                      style="width: 300px">
+                      <div
+                        class="card card-body col-sm-12"
+                        style="padding: 0px">
+                        <h5 class="card-header bg-dark text-white">Address {{forloop.counter}}</h5>
+                        <div class="p-2">
+                          <p class="card-text mb-0">
+                            <b>{{item.full_name}}</b> <br/>
+                            {{item.address_line1}}<br/>
+                            {{item.address_line2}}<br/>
+                            {{item.state}}<br />{{item.city}}<br />{{item.country}}
+                          </p>
+                          <p class="cart-text mb-0">{{item.email}}</p>
+                          <p class="cart-text mb-0">{{item.phone}}</p>
+                          <a href="{% url 'deleteCheckoutAddress' item.id %}"><button type="button" class="btn btn-danger m-2 text-center">Delete</button></a>
+                        </div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                {%endfor%} 
+              </div>
+            </div>
+
+            
+
+
+          </div>
         </div>
-    </section>
-    <!--================End Checkout Area =================-->
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 col-md-12 col-lg-12">
+            <div class="order_box mt-5 pt-5">
+              <h2>Your Order</h2>
+              <ul class="list">
+                <li>
+                  <a href="#">Product<span>Total</span></a>
+                </li>
+                {% for cart_item in cart_items %}
+                <li>
+                  <a href="#"
+                    >{{ cart_item.product.product_name }}<span class="middle"
+                      >x {{ cart_item.quantity }}</span
+                    >
+                    <span class="last">₹{{ cart_item.sub_total }}</span></a
+                  >
+                </li>
+                {% endfor %}
+              </ul>
+              <ul class="list list_2">
+                <li>
+                  <a href="#">Net total <span>₹{{total}}</span></a>
+                </li>
+                <li>
+                  <a href="#">tax <span>Flat rate: ₹{{tax}}</span></a>
+                </li>
+                <li>
+                  <div class="checkout__order__total" id="coupon_block" style="display: none;">Discount <span>- ₹<b id="coupon_discount"></b></span>
+                  <h1 class="text-danger" style="font-size: 12px;">*Coupon Applied - <b id="coupon_code"></b></h1></div>
+                </li>
+                <li>
+                  <a href="#">Grand total <span id='grand_total'>₹{{grand_total}}</span></a>
+                  <input type="text" name="coupon" id="coupon_code1" style="display: none;">
+                </li>
+              </ul>
+              <button
+                type="submit"
+                class="btn btn-warning btn-lg btn-block mb-2">
+                Place order
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="a{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">payment confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div class="card-body">
+        <div class="row"> 
+        <div class="col-md-12">
+                 <form action="{% url 'AddCheckoutAddress' %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="form-row">
+                      <div class="form-group col-md-6">
+                          <label >First Name</label>
+                         {{form.first_name}}
+                      </div>
+                      <div class="form-group col-md-6">
+                          <label >Last Name</label>
+                          {{form.last_name}}
+                      </div>
+  
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label >Email</label>
+                        {{form.email}}
+                    </div>
+                    <div class="form-group col-md-6">
+                          <label >Phone Number</label>
+                          {{form.phone}}
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label >Address Line 1</label>
+                      {{form.address_line1}}
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label >Address Line 2</label>
+                      {{form.address_line2}}
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label >City</label>
+                      {{form.city}}
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label >Country</label>
+                      {{form.country}}
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label >State</label>
+                      {{form.state}}
+                    </div>
+                         
+                  </div>
+                 
+  
+               
+           {% for message in messages %}
+                      <hr />
+                      <p class="text-danger">{{message}}</p>
+                      {% endfor%}
+        
+        </div>
+        </div> <!-- row.// -->
+      </div> <!-- card-body .// -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href=""><button type="submit" class="btn btn-primary">Save</button></a>
+         </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal -->
+
+  
+</section>
+
+
+
+
+
+<!-- coupon -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    $('#coupon_form').on('submit', function(e){
+             
+        e.preventDefault();
+        
+          $.ajax({
+               type : "POST", 
+               url: "{% url 'coupons' %}",
+               data: {
+                   coupon : $('#coupon_data').val(),
+                   grand_total : '{{grand_total}}',
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                dataType: "json",
+        
+               },
+               
+               success: function(data){
+                  $('#output').html(data.msg) /* response message */
+                  $('#grand_total').text('₹'+data.grand_total)
+                  if (data.coupon_discount > 0) {
+                      $('#coupon_block').show()
+                      $('#accordionExample').hide()
+                  }
+                  $('#coupon_discount').html(data.coupon_discount)
+                  $('#coupon_code').html(data.coupon_code)
+                  $('#coupon_code1').val(data.coupon_code)
+
+                  
+               },
+        
+               failure: function() {
+                   
+               }
+        
+        
+           });
+        
+        
+                });  
+</script>
+
+
 
 {%endblock%}

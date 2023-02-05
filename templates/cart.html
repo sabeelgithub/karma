@@ -86,7 +86,7 @@
                                     <h5>₹{{ cart_item.sub_total }}</h5>
                                 </td>
                                 <td>
-                                    <a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id  %}" onclick="" class="btn btn-danger" >Remove</a>
+                                    <a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id  %}" onclick="" id="remove-button" class="btn btn-danger" >Remove</a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -156,6 +156,7 @@
                                         <a class="gray_btn" style="font-size: 13px" href="{% url 'shop' %}">Continue Shopping</a>
                                        
                                         <a class="primary-btn" href="{% url 'checkout' %}">Proceed to checkout</a>
+                                        
                                     </div>
                                 </td>
                             </tr>
@@ -166,23 +167,7 @@
             {% endif %}
         </div>
     </section>
-     {% comment %} <script type="text/javascript">
-     $(document).on('submit','#post-form',function(e){
-        e.preventDefault();
-        $.ajax({
-            type:'POST',
-            url :'add_cart/<int:product_id>/',
-            data:{
-
-            }
-        })
-     })
-     </script>  {% endcomment %}
+       
     <!--================End Cart Area =================-->
-    {% comment %} <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script>
-    swal("Are you sure you want to do this?", {
-  buttons: ["Oh noez!", true],
-  });
-    </script> {% endcomment %}
+    
 {%endblock%}

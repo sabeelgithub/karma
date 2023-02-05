@@ -24,5 +24,10 @@ urlpatterns = [
     path('<int:id>/delete_variation/', views.delete_variation,name='delete_variation'),
     path('<int:id>/update_variation/', views.update_variation,name='update_variation'),
     path('add_variation/', views.add_variation,name='add_variation'),
-    path('orders/', views.orders,name='orders'),      
+    path('orders/', views.orders,name='orders'), 
+    path('update_order/<int:id>',views.update_order,name="update_order"), 
+    path('coupon/', views.coupon,name='coupon'),    
+    path('addCoupon/', views.addCoupon,name='addCoupon'),
+    path('<int:id>/deleteCoupon/', views.deleteCoupon,name='deleteCoupon'),
+    path('<int:id>/updateCoupon/', views.updateCoupon,name='updateCoupon'),
 ]

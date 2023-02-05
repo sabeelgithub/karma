@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.models import User,auth
 from django.contrib.auth import login
 from .models import CustomUser
+from home.models import UserProfile
 from django.contrib import messages
 from .verify import send_otp, verify_otp
 from carts.models import Cart,CartItem
@@ -23,16 +24,20 @@ def signup(request):
         if password1 == password2:
             if CustomUser.objects.filter(phone=phone).exists():
                 print('phone no taken')
+                messages.error(request, 'Phone already taken!!')
                 return redirect('signup')
             elif CustomUser.objects.filter(email=email).exists():
                 print('email taken')
                 messages.error(request, 'Email already taken!!')
                 return redirect('signup')
             else:
-    
+                 
+                
                 user = CustomUser.objects.create_user(first_name=firstname,last_name=lastname,email=email,password=password1,phone=phone)
                 user.save()
-                
+                userprofile = UserProfile.objects.create(user_id=user.id)
+                userprofile.save()
+               
                 print('user created')
 
                 

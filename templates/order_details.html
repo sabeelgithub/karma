@@ -18,7 +18,8 @@
     <!-- End Banner Area -->
      <!--================Order Details Area =================-->
 	<section class="order_details section_gap">
-		<div class="container">
+		<div class="container" id='invoice'>
+		
 			<div class="row order_d_inner">
 				<div class="col-lg-6">
 					<div class="details_item">
@@ -27,11 +28,13 @@
 							<li><a href="#"><span>Order number</span> :#{{orders.order_number}}</a></li>
 							<li><a href="#"><span>Order Date</span> : {{orders.created_at}}</a></li>
 							<li><a href="#"><span>Payment method</span> : {{orders.payment.payment_method}}</a></li>
+							<li><a href="#"><span>order status</span> : {{orders.status}}</a></li>
                             {% if orders.payment.payment_method == 'Paypal' %}
                             <li><a href="#"><span>Transaction ID</span> : {{orders.payment.payment_id}}</a></li>
 							<li><a href="#"><span> payment status</span> : {{orders.payment.status}}</a></li>
                             {% else %}
-							<li><a href="#"><span> payment status</span> : {{orders.status}}</a></li>
+							
+							<li><a href="#"><span> payment status</span> : {{orders.payment.status}}</a></li>
                             {% endif %}
 						</ul>
 					</div>
@@ -56,9 +59,9 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th scope="col">Product</th>
-								<th scope="col">Quantity</th>
-							 	<th scope="col">Total</th>
+								<th scope="col"><strong>Product</strong></th>
+								<th scope="col"><strong>Quantity</strong></th>
+							 	<th scope="col"><strong>Total</strong></th>
 							</tr>
  						</thead>
 						<tbody>
@@ -136,7 +139,37 @@
 				</div>
 			</div>
 		</div>
+		  
+       <div style="display: flex;
+    justify-content: center;">
+<input type="button" class="btn btn-secondary btn-md align-center m-4" id="btnExport" value="Download Invoice" /></div> 
 	</section>
 	<!--================End Order Details Area =================-->
+     
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+       <script type="text/javascript">
+        $("body").on("click", "#btnExport", function () {
+			console.log('hi')
+            html2canvas($('#invoice')[0], {
+                onrendered: function (canvas) {
+                    var data = canvas.toDataURL();
+                    var docDefinition = {
+                        content: [{
+                            image: data,
+                            width: 500
+                        }]
+                    };
+                    pdfMake.createPdf(docDefinition).download("invoice.pdf");
+                }
+            });
+        });
+    </script>
+
+
+
 
 {%endblock%}

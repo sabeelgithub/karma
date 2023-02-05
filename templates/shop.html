@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="{% static 'css/main.css'%}" />
   </head>
 
-  <body id="category">
+  <body id="category" style="overflow-x:hidden;">
 <!-- Start Header Area -->
     <header class="header_area sticky-header">
       <div class="main_menu">
@@ -62,13 +62,13 @@
               id="navbarSupportedContent"
             >
               <ul class="nav navbar-nav menu_nav ml-auto">
-                <li class="nav-item active">
+                <li class="nav-item ">
                   <a class="nav-link" href="{% url 'home'%}">Home</a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item ">
                   <a class="nav-link" href="{% url 'shop' %}">Shop</a>
                 </li>
-               <li class="nav-item active">
+               <li class="nav-item ">
                   <a class="nav-link" href="{% url 'userdash' %}">Profile</a>
                 </li>
                 {%if user.is_authenticated %}
@@ -658,6 +658,7 @@
     <script src="{% static 'js/gmaps.min.js'%}"></script>
     <script src="{% static 'js/main.js'%}"></script>
     <script src="{% static 'js/search.js'%}"></script>
+    <script src="{% static 'js/orderReturn.js'%}"></script>
     
   </body>
 </html>
