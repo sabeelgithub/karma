@@ -8,6 +8,14 @@ from .verify import send_otp, verify_otp
 from carts.models import Cart,CartItem
 from carts.views import _cart_id
 import requests
+from django.http import HttpResponse
+#verification
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
 
 # Create your views here.
 def signup(request):
@@ -52,7 +60,7 @@ def signup(request):
      context = {
          'mobile':mobile
      }  
-     return render(request,'signup.html', context)
+     return render(request,'authenticate/signup.html', context)
      
 def login(request):
     if request.user.is_authenticated:
@@ -128,7 +136,7 @@ def login(request):
             messages.error(request, 'Invalid username or password !!')
             return redirect('login')
     else:    
-        return render(request,'login.html')
+        return render(request,'authenticate/login.html')
 def logout(request):
     print('logout')
     auth.logout(request)
@@ -148,7 +156,7 @@ def mobile(request):
             request.session['phone_number'] = phone
             send_otp(phone)
             return redirect(verify_code)
-    return render(request,'mobile.html')
+    return render(request,'authenticate/mobile.html')
 
 
 def verify_code(request):
@@ -166,7 +174,7 @@ def verify_code(request):
             print('incorrect otp')
             return redirect(verify_code)
 
-    return render(request, 'verify_code.html')
+    return render(request, 'authenticate/verify_code.html')
 
 def mobilelogin(request):
     if request.user.is_authenticated:
@@ -182,7 +190,7 @@ def mobilelogin(request):
             messages.error(request, 'invalid mobile number!!')
             return redirect('mobilelogin')
     else:    
-     return render(request,'mobilelogin.html')
+     return render(request,'authenticate/mobilelogin.html')
 def verify_codelogin(request):
     if request.user.is_authenticated:
         return redirect('home') 
@@ -209,4 +217,5 @@ def verify_codelogin(request):
             return redirect(verify_codelogin)
     else:
 
-      return render(request,'verify_codelogin.html')
+      return render(request,'authenticate/verify_codelogin.html')
+    

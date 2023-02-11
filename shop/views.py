@@ -36,7 +36,7 @@ def shop(request,sub_category_slug=None):
         'products':paged_products,
         
     }
-    return render(request,'shop.html',context)
+    return render(request,'shop/shop.html',context)
 def search(request):
    categories = Category.objects.all()
    sub = Sub_Category.objects.all()
@@ -55,7 +55,7 @@ def search(request):
           'sub':sub
 
         }       
-   return render(request,'shop.html',context)
+   return render(request,'shop/shop.html',context)
    
 def product_details(request,sub_category_slug,product_slug):
     try:
@@ -63,9 +63,11 @@ def product_details(request,sub_category_slug,product_slug):
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request),product=single_product).exists()
     except Exception as e:
         raise e
+    
     context = {
         'single_product':single_product,
         'in_cart':in_cart,
+       
 
     }
-    return render(request,'product_details.html',context)
+    return render(request,'shop/product_details.html',context)

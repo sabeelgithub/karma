@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse
 from .models import Order,Payment,Address
-from shop.models import Variation
+from shop.models import Variation,Products
 from carts.models import CartItem
 from .forms import OrderForm
 import datetime
@@ -18,7 +18,7 @@ def payments(request):
       order_id = order.order_number,
       payment_method = body['payment_method'],
       amount_paid = order.order_total,
-      status = body['status'],
+      status = 'True',                  #body['status']
    )
    payment.save()
    order.payment = payment
@@ -43,7 +43,12 @@ def payments(request):
       order_product.variations.set(product_variation)
       order_product.save()
 
-      # reduce the Quantity
+      # Reduce quantity of product
+      product = Products.objects.get( id = cart_item.product_id)
+      product.stock -= cart_item.quantity
+      product.save()
+
+      # reduce the Quantity of variation
       variation = Variation.objects.filter(id__in= cart_item.variations.all())
          
       for var in variation:
@@ -90,76 +95,15 @@ def payments_completed(request):
          'payment':payment,
          'total':total,
          'tax':tax,
-         'grand_total':grand_total,
+         
       }
-      return render(request,'payment_success.html',context)
+      return render(request,'order/payment_success.html',context)
    except Exception as e:
       print(e)
       print('kashtam')
       return redirect('home')
    
-# def place_order(request,total=0,quantity=0):
-#     current_user = request.user
 
-#     # if the cart count is less than or equal to 0,then redirect back to shop
-#     cart_items = CartItem.objects.filter(user=current_user)
-#     cart_count = cart_items.count()
-#     if cart_count <= 0:
-#       return redirect('shop')
-    
-#     grand_total = 0
-#     tax = 0
-#     for cart_item in cart_items:
-#        total += (cart_item.product.price * cart_item.quantity)
-#        quantity += cart_item.quantity
-#     tax =(2 * total)/100
-#     grand_total = total + tax     
-    
-#     if request.method == 'POST':
-#        form = OrderForm(request.POST)
-#        if form.is_valid():
-#           # store all the billing information inside order table
-#           data = Order()
-#           data.user = current_user
-#           data.first_name = form.cleaned_data['first_name']
-#           data.last_name = form.cleaned_data['last_name']
-#           data.phone = form.cleaned_data['phone']
-#           data.email = form.cleaned_data['email']
-#           data.address_line_1 = form.cleaned_data['address_line_1']
-#           data.address_line_2 = form.cleaned_data['address_line_2']
-#           data.country = form.cleaned_data['country']
-#           data.state = form.cleaned_data['state']
-#           data.city = form.cleaned_data['city']
-#           data.order_note = form.cleaned_data['order_note']
-#           data.order_total = grand_total
-#           data.tax = tax 
-#           data.ip = request.META.get('REMOTE_ADDR')
-#           data.save()
-
-#           # generate order number
-#           yr = int(datetime.date.today().strftime('%Y'))
-#           dt = int(datetime.date.today().strftime('%d'))
-#           mt = int(datetime.date.today().strftime('%m'))
-#           d = datetime.date(yr,mt,dt)
-#           current_date = d.strftime("%Y%m%d")
-#           order_number = current_date + str(data.id)
-#           data.order_number = order_number
-#           data.save()
-
-#           order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
-#           context={
-#              'order':order,
-#              'cart_items':cart_items,
-#              'total':total,
-#              'tax':tax,
-#              'grand_total':grand_total,
-#              'order_number':order_number
-
-#           }
-#           return render(request,'payments.html',context)
-#        else:
-#           print('form not valid')
-#           return redirect('checkout')
        
 def place_order(request,total=0,quantity=0):
     current_user = request.user
@@ -176,12 +120,15 @@ def place_order(request,total=0,quantity=0):
        total += (cart_item.product.price * cart_item.quantity)
        quantity += cart_item.quantity
     tax =(2 * total)/100
-    grand_total = total + tax    
+    coupon_discount=0
+    grand_total = total + tax 
+    grand_total = format(grand_total, '.2f')   
 
     
 
     
     if request.method == 'POST':
+          coupon_code = request.POST['coupon']
           id = request.POST['flexRadioDefault']
           address  = Address.objects.get(user = request.user,id = id)
           data = Order()
@@ -211,6 +158,22 @@ def place_order(request,total=0,quantity=0):
           data.order_number = order_number
           data.save()
 
+          try:
+            instance = UserCoupon.objects.get(user = request.user ,coupon__code = coupon_code)
+        
+            if float(grand_total) >= float(instance.coupon.min_value):
+               coupon_discount = ((float(grand_total) * float(instance.coupon.discount))/100)
+               grand_total = float(grand_total) - coupon_discount
+               grand_total = format(grand_total, '.2f')
+               coupon_discount = format(coupon_discount, '.2f')
+          
+            data.order_total = grand_total
+            data.order_discount = coupon_discount
+            data.save()
+        
+          except:
+            pass
+
           order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
 
 
@@ -219,12 +182,13 @@ def place_order(request,total=0,quantity=0):
              'cart_items':cart_items,
              'total':total,
              'tax':tax,
+             'coupon_discount':coupon_discount,
              'grand_total':grand_total,
              'order_number':order_number,
              
 
           }
-          return render(request,'payments.html',context)
+          return render(request,'order/payments.html',context)
     else:
           print('form not valid')
           return redirect('checkout')
@@ -236,6 +200,15 @@ def cash_on_delivery(request,id):
       order = Order.objects.get(user=request.user,is_ordered=False,order_number=id)
       cart_items = CartItem.objects.filter(user=request.user)
       order.is_ordered = True
+      total = 0
+      for i in cart_items:
+           total += i.product.price * i.quantity
+      tax = (2*total)/100
+      shipping = (2*total)/100
+      grand_total = order.order_total + shipping
+      order.order_total = grand_total
+      order.save()
+
       payment = Payment(
          user = request.user,
          payment_id = order.order_number,
@@ -273,7 +246,12 @@ def cash_on_delivery(request,id):
          print('heeeeeeeeeeeeeeeee')
          order_product.save()
 
-         # # Reduce quantity of product
+         # Reduce quantity of product
+         product = Products.objects.get( id = cart_item.product_id)
+         product.stock -= cart_item.quantity
+         product.save()
+
+         # # Reduce quantity of variation
          print('mooooo')
          print(cart_item.id)
          print(type(cart_item.variations))
@@ -292,12 +270,29 @@ def cash_on_delivery(request,id):
 
       ordered_products = OrderProduct.objects.filter(order_id = order.id)
 
-      total = 0
-      for i in ordered_products:
-           total += i.product_price * i.quantity
-      tax = (2*total)/100
-      shipping = (2*total)/100
-      grand_total = total + tax + shipping
+      # total = 0
+      # for i in ordered_products:
+      #      total += i.product_price * i.quantity
+      # tax = (2*total)/100
+      # shipping = (2*total)/100
+      # grand_total = order.order_total + shipping
+      # order.order_total = grand_total
+      # order.save()
+      # payment = Payment(
+      #    amount_paid = order.order_total,
+      #    user = request.user,
+      #    payment_id = order.order_number,
+      #    order_id = order.order_number,
+      #    payment_method = 'Cash on Delivery',
+         
+      #    status = False
+      # )
+      # payment.save()
+      # order.payment = payment
+      # order.save()
+
+      
+     
 
       context ={
             'order':order,
@@ -306,9 +301,10 @@ def cash_on_delivery(request,id):
             'total':total,
             'tax':tax,
             'shipping':shipping,
-            'grand_total':grand_total
+            
+            
          }  
-      return render(request,'cod_success.html',context) 
+      return render(request,'order/cod_success.html',context) 
    except Exception as e:
       print(e)
       return redirect('home')
@@ -324,10 +320,19 @@ def cancel_order(request,id):
     order.save()
     payment = Payment.objects.get(order_id = order.order_number)
     payment.delete()
-    order_product = OrderProduct.objects.get(user=request.user,order=order)
+     
+    order_product = OrderProduct.objects.get(user=request.user,order=order) 
+    # increase quantity of product
+    product = Products.objects.get( id = order_product.product_id)
+    product.stock += order_product.quantity
+    product.save()
+    
+    # increase quantity of product variation
+    
     print(order_product.variations)
     variation = Variation.objects.filter(id__in= order_product.variations.all())
     print(variation)
+
     for var in variation:
          var.stock += order_product.quantity
          var.save()
@@ -352,7 +357,14 @@ def return_order(request, id):
   payment = Payment.objects.get(order_id = order.order_number)
   print("order get")
   payment.delete()
-  order_product = OrderProduct.objects.get(user=request.user,order=order)
+
+  order_product = OrderProduct.objects.get(user=request.user,order=order) 
+  # increase quantity of product
+  product = Products.objects.get( id = order_product.product_id)
+  product.stock += order_product.quantity
+  product.save()
+  
+  # increase quantity of product variation
   print(order_product.variations)
   variation = Variation.objects.filter(id__in= order_product.variations.all())
   print(variation)
@@ -364,41 +376,6 @@ def return_order(request, id):
          
 
   return redirect('my_orders')
-
-
-
-
-
-# def coupon(request):
-#   if request.method == 'POST':
-#     coupon_code = request.POST['coupon']
-#     grand_total = request.POST['grand_total']
-#     coupon_discount = 0
-#     try:
-#       instance = UserCoupon.objects.get(user = request.user ,coupon__code = coupon_code)
-
-#       if float(grand_total) >= float(instance.coupon.min_value):
-#         coupon_discount = ((float(grand_total) * float(instance.coupon.discount))/100)
-#         grand_total = float(grand_total) - coupon_discount
-#         grand_total = format(grand_total, '.2f')
-#         coupon_discount = format(coupon_discount, '.2f')
-#         msg = 'Coupon Applied successfully'
-#         instance.used = True
-#         instance.save()
-#       else:
-#           msg='This coupon is only applicable for orders more than ₹'+ str(instance.coupon.min_value)+ '\- only!'
-#     except:
-#             msg = 'Coupon is not valid'
-#     response = {
-#                'grand_total': grand_total,
-#                'msg':msg,
-#                'coupon_discount':coupon_discount,
-#                'coupon_code':coupon_code,
-#                 }
-
-#   return JsonResponse(response)
-
-
 
 
 

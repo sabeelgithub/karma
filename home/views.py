@@ -8,6 +8,9 @@ from authenticate.forms import CustomUserForm,UserProfileForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import AddressForm
+# from datetime import datetime,timedelta,date
+from datetime import date
+from datetime import timedelta
 
 # Create your views here.
 def index(request):
@@ -17,9 +20,9 @@ def index(request):
     }
     return render(request,'index.html',context)
 
-@login_required(login_url='login')
-def profile(request):
-    return render(request,'profile.html')
+# @login_required(login_url='login')
+# def profile(request):
+#     return render(request,'profile.html')
 
 @login_required(login_url='login')
 def userdash(request):
@@ -32,7 +35,7 @@ def userdash(request):
         'user':user,
         'userprofile':userprofile 
     }
-    return render(request,'userdash.html',context)
+    return render(request,'profile/userdash.html',context)
 
 @login_required(login_url='login')
 def edit_profile(request):
@@ -55,7 +58,7 @@ def edit_profile(request):
         'profile_form':profile_form,
         'userprofile':userprofile,
         }
-    return render(request,'edit_profile.html',context)
+    return render(request,'profile/edit_profile.html',context)
 
 @login_required(login_url='login')
 def change_password(request):
@@ -79,7 +82,7 @@ def change_password(request):
             messages.error(request,'Password does not match!')
             return redirect('change_password')
 
-    return render(request,'change_password.html')
+    return render(request,'profile/change_password.html')
 
 @login_required(login_url='login')
 def my_orders(request):
@@ -87,10 +90,17 @@ def my_orders(request):
     paginator = Paginator(orders,8)
     page= request.GET.get('page')
     paged_users = paginator.get_page(page)
+    # orderdate = orders.created_at
+    today = date.today()
+    for order in orders:
+     add = order.created_at + timedelta(days=0)
+
     context = {
        'orders': paged_users, 
+       'today':today,
+       'add':add,
     }
-    return render(request,'my_orders.html',context)
+    return render(request,'profile/my_orders.html',context)
 
 @login_required(login_url='login')
 def order_details(request,order_id):
@@ -102,18 +112,17 @@ def order_details(request,order_id):
     tax = (2*total)/100
     shipping = (2*total)/100
     print('check')
-    grand_total = total + tax 
-    grand_total_shipping=total + tax + shipping
+    
+    
     context = {
         'order_detail':order_detail,
         'orders':orders,
         'total':total,
         'tax':tax,
         'shipping':shipping,
-        'grand_total':grand_total,
-        'grand_total_shipping':grand_total_shipping,
+       
     }
-    return render(request,'order_details.html',context)
+    return render(request,'profile/order_details.html',context)
 
 @login_required(login_url='login')
 def myAddress(request):
@@ -126,7 +135,7 @@ def myAddress(request):
   context = {
     'address':paged_address,
   }
-  return render(request,'myAddress.html', context)
+  return render(request,'profile/myAddress.html', context)
 
 @login_required(login_url='login')
 def addAddress(request):
@@ -155,7 +164,7 @@ def addAddress(request):
         context={
             'form':form
         }    
-    return render(request,'addAddress.html',context)
+    return render(request,'profile/addAddress.html',context)
 
 @login_required(login_url='login')
 def deleteAddress(request,id):
@@ -182,7 +191,7 @@ def editAddress(request, id):
   context = {
             'form' : form,
         }
-  return render(request , 'editAddress.html' , context)
+  return render(request , 'profile/editAddress.html' , context)
 
 
 

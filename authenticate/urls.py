@@ -8,5 +8,8 @@ urlpatterns = [
     path('logout/', views.logout,name='logout'),
     path('verify_code/', views.verify_code, name='verify_code'),
     path('mobilelogin/', views.mobilelogin, name='mobilelogin'), 
-    path('verify_codelogin/', views.verify_codelogin, name='verify_codelogin'),     
+    path('verify_codelogin/', views.verify_codelogin, name='verify_codelogin'),
+   
+    
+        
 ]

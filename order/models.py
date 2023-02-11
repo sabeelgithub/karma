@@ -63,6 +63,7 @@ class Order(models.Model):
     city = models.CharField(max_length=50)
     order_note = models.CharField(max_length=100,blank=True)
     order_total = models.FloatField()
+    order_discount = models.FloatField(default=0)
     tax = models.FloatField()
     status = models.CharField(max_length=50,choices=STATUS,default='Order Confirmed')
     ip = models.CharField(blank=True,max_length=20)
@@ -82,14 +83,11 @@ class Order(models.Model):
         return self.first_name 
     
 class OrderProduct(models.Model):
-    order = models.ForeignKey(Order,on_delete=models.CASCADE)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE,related_name='user_order_page')
     payment = models.ForeignKey(Payment,on_delete=models.SET_NULL,blank=True,null=True)
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     product = models.ForeignKey(Products,on_delete=models.CASCADE)
     variations = models.ManyToManyField(Variation,blank=True)
-    # variation = models.ForeignKey(Variation,on_delete=models.CASCADE,blank=True,null=True)
-    # color = models.CharField(max_length=50,blank=True)
-    # size = models.CharField(max_length=50,blank=True)
     quantity = models.IntegerField()
     product_price = models.FloatField()
     ordered = models.BooleanField(default=False)

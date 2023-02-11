@@ -18,14 +18,11 @@
     <!-- meta character set -->
     <meta charset="UTF-8" />
     <!-- Site Title -->
-    <title>Karma Shop</title>
+    <title>Karma Store</title>
     <!--
 		CSS
 		============================================= -->
-    <script
-      src="https://kit.fontawesome.com/79331ba19e.js"
-      crossorigin="anonymous"
-    ></script>
+    
     <link rel="stylesheet" href="{% static 'css/linearicons.css' %}" />
     <link rel="stylesheet" href="{% static 'css/font-awesome.min.css'%}" />
     <link rel="stylesheet" href="{% static 'css/themify-icons.css'%}" />
@@ -37,16 +34,21 @@
     <link rel="stylesheet" href="{% static 'css/ion.rangeSlider.skinFlat.css'%}"/>
     <link rel="stylesheet" href="{% static 'css/magnific-popup.css'%}" />
     <link rel="stylesheet" href="{% static 'css/main.css'%}" />
+    <script
+      src="https://kit.fontawesome.com/79331ba19e.js"
+      crossorigin="anonymous"
+    ></script>
+ 
     
   </head>
-  <body style="overflow-x:hidden;">
+  <body  style="overflow-x:hidden;">
     <!-- Start Header Area -->
     <header class="header_area sticky-header">
       <div class="main_menu">
         <nav class="navbar navbar-expand-lg navbar-light main_box">
           <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <a class="navbar-brand logo_h" href="#"
+            <a class="navbar-brand logo_h" href="{% url 'home' %}"
               ><img src="{% static 'img/logo.png'%}" alt=""
             /></a>
             <button
@@ -63,49 +65,44 @@
               <span class="icon-bar"></span>
             </button>
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div
+              <div
               class="collapse navbar-collapse offset"
-              id="navbarSupportedContent"
-            >
+              id="navbarSupportedContent">
               <ul class="nav navbar-nav menu_nav ml-auto">
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'home'%}">Home</a>
+                <li class="nav-item ">
+                  <a class="nav-link mt-1" href="{% url 'home'%}">Home</a>
                 </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'shop' %}">Shop</a>
+                <li class="nav-item ">
+                  <a class="nav-link mt-1" href="{% url 'shop' %}">Shop</a>
                 </li>
-                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'userdash' %}">Profile</a>
-                </li>
-                
                 {%if user.is_authenticated %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                  <a class="nav-link mt-1" href="{% url 'logout' %}">Logout</a>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'login' %}">Login</a>
+                  <a class="nav-link mt-1" href="{% url 'login' %}">Login</a>
                 </li>
                 {% endif %}
-                <li class="nav-item">
-                  <a class="nav-link" href="contact.html">Contact</a>
+                 {%if user.is_authenticated %}
+                 <li class="nav-item ">
+                  <a class="nav-link mt-1" href="{% url 'userdash' %}">Hi, {{user.first_name}}</a>
                 </li>
+                {% endif %}
+                
+                 <li class="nav-item ">
+                  <a class="nav-link" href="{% url 'userdash' %}"><i  style="font-size:17px" class="fa fa-user mt-1" aria-hidden="true"></i></a>
+                </li>
+               
               </ul>
               <ul class="nav navbar-nav navbar-right">
+              
                 <li class="nav-item">
-                  <a href="#" class="cart"><span class=""></span></a>
-                </li>
-                <li class="nav-item">
-                  <a href="#" class="fa-sm"
-                    ><span class="lnr lnr-heart"></span
-                  ></a>
-                </li>
-                <li class="nav-item">
-                  <a href="{% url 'cart' %}" class="cart"><span class="ti-bag"></span></a>
+                  <a href="{% url 'cart' %}" class="cart"><span style="font-size:15px" class="ti-bag"></span></a>
                 </li>
                 <li class="nav-item">
                   <button class="search fa-sm">
-                    <span class="lnr lnr-magnifier" id="search"></span>
+                    <span class="lnr lnr-magnifier"  style="font-size:15px"id="search"></span>
                   </button>
                 </li>
               </ul>
@@ -113,7 +110,7 @@
           </div>
         </nav>
       </div>
-      <div class="search_input" id="search_input_box">
+      <div class="search_input " style="display: none;" id="search_input_box">
         <div class="container">
           <form id="form" class="d-flex justify-content-between" action="{% url 'search' %}" method="GET">
             <input
@@ -145,8 +142,7 @@
             <div class="single-footer-widget">
               <h6>About Us</h6>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                eiusmod tempor incididunt ut labore dolore magna aliqua.
+               Fashion is a form of self-expression and autonomy at a particular period and place and in a specific context, of clothing, footwear, lifestyle, accessories, makeup, hairstyle, and body posture
               </p>
             </div>
           </div>
@@ -214,10 +210,10 @@
               <h6>Follow Us</h6>
               <p>Let us be social</p>
               <div class="footer-social d-flex align-items-center">
-                <a href="#"><i class="fa fa-facebook"></i></a>
-                <a href="#"><i class="fa fa-twitter"></i></a>
-                <a href="#"><i class="fa fa-dribbble"></i></a>
-                <a href="#"><i class="fa fa-behance"></i></a>
+                <a href="https://www.facebook.com/sabio.sabeel?mibextid=LQQJ4d"><i class="fa fa-facebook"></i></a>
+                <a href="https://www.linkedin.com/in/mohammed-sabeel-299057247/"><i class="fa fa-linkedin-square" aria-hidden="true"></i></a>
+                <a href="https://www.instagram.com/sab__eel/"><i class="fa fa-instagram"></i></a>
+                <a href="https://api.WhatsApp.com/send?phone=918086505661"><i class="fa fa-whatsapp"></i></a>
               </div>
             </div>
           </div>
@@ -233,7 +229,7 @@
             </script>
             All rights reserved | This template is made with
             <i class="fa fa-heart-o" aria-hidden="true"></i> by
-            <a href="https://colorlib.com" target="_blank">Colorlib</a>
+            <a href="https://www.instagram.com/sab__eel/" target="_blank">mohammedsabeel</a>
             <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
           </p>
         </div>
@@ -270,6 +266,11 @@
     <script src="{% static 'js/search.js'%}"></script>
     <script src="{% static 'js/orderReturn.js'%}"></script>
     <script src="{% static 'js/editaddress.js'%}"></script>
+    <script src="{% static 'js/xzoom.js'%}"></script>
+    <script
+      src="https://kit.fontawesome.com/79331ba19e.js"
+      crossorigin="anonymous"
+    ></script>
  
     
 

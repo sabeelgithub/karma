@@ -35,7 +35,7 @@ class Sub_CategoryForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Products
-        fields = ['product_name','slug','description','price','image1','image2','image3','is_available','category','sub_category'] 
+        fields = ['product_name','slug','description','price','stock','image1','image2','image3','is_available','category','sub_category'] 
         labels ={
             'product_name':'product name',
             'description':'description',
@@ -43,7 +43,7 @@ class ProductForm(forms.ModelForm):
             'image1':'image 1',
             'image2':'image 2',
             'image3':'image 3',
-            #'stock':'stock',
+            'stock':'stock',
             'is_available':'is available',
             'category':'category',
             'sub_category':'sub category',
@@ -52,7 +52,7 @@ class ProductForm(forms.ModelForm):
 class Update_ProductForm(forms.ModelForm):
     class Meta:
         model = Products
-        fields = ['product_name','slug','description','price','image1','image2','image3','is_available','category','sub_category'] 
+        fields = ['product_name','slug','description','price','stock','image1','image2','image3','is_available','category','sub_category'] 
         labels ={
             'product_name':'product name',
             'description':'description',
@@ -60,7 +60,7 @@ class Update_ProductForm(forms.ModelForm):
             'image1':'image 1',
             'image2':'image 2',
             'image3':'image 3',
-           # 'stock':'stock',
+            'stock':'stock',
             'is_available':'is available',
             'category':'category',
             'sub_category':'sub category',

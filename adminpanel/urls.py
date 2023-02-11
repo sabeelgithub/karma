@@ -30,4 +30,9 @@ urlpatterns = [
     path('addCoupon/', views.addCoupon,name='addCoupon'),
     path('<int:id>/deleteCoupon/', views.deleteCoupon,name='deleteCoupon'),
     path('<int:id>/updateCoupon/', views.updateCoupon,name='updateCoupon'),
+    path('salesReport/', views.salesReport,name='salesReport'),
+    path('salesReportMonth/<int:id>',views.salesReportMonth,name="salesReportMonth"),
+    path("salesReportYear/<int:id>",views.salesReportYear,name='salesReportYear'),
+    path('pdfReport/<str:start_date>//<str:end_date>/', views.pdfReport, name='pdfReport'),
+    path('excelReport/<str:start_date>//<str:end_date>/', views.excelReport, name='excelReport')
 ]
