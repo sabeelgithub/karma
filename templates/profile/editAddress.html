@@ -29,12 +29,17 @@
                   <div class="form-row">
                     <div class="form-group col-md-6">
                         <label >Email</label>
-                        {{form.email}}
+                        <input type="email" name="email" value="{{form.email.value}}" maxlength="50" onkeyup="validateAddAddressEmail()" class="form-control" id="id_email">
+                        	<span id="email-error"class='change'></span>
+                        {% comment %} {{form.email}} {% endcomment %}
+
                        
                     </div>
                     <div class="form-group col-md-6">
                           <label >Phone Number</label>
-                          {{form.phone}}
+                          <input type="text" name="phone" value="{{form.phone.value}}" maxlength="15" onkeyup="validateAddAddressMobilenumber()" class="form-control"  id="id_phone">
+                          <span id="mobilenumber-error"class='change'></span>
+                          {% comment %} {{form.phone}} {% endcomment %}
                           
                     </div>
                     <div class="form-group col-md-6">
@@ -65,15 +70,11 @@
                    
                          
                   </div>
-                  <input type="submit" name="" id="" value="Save" class="btn btn-dark">
-                  
+                  <input type="submit" name="" id="" value="Save" onclick="return validateAddAddresForm()" class="btn btn-dark">
+                   <span id="submit-error" class="mt-2"></span>
   
                  </form>
-           {% for message in messages %}
-                      <hr />
-                      <p class="text-danger">{{message}}</p>
-                      {% endfor%}
-        
+           
         </div>
         </div> <!-- row.// -->
       </div> <!-- card-body .// -->

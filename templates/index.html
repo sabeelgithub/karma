@@ -3,11 +3,11 @@
 {%block content%}
 
 <!-- start banner Area -->
-	<section class="banner-area">
+	{% comment %} <section class="banner-area" style="max-height:70vh;">
 		<div class="container">
 			<div class="row fullscreen align-items-center justify-content-start">
 				<div class="col-lg-12">
-					<div class="active-banner-slider owl-carousel">
+					{% comment %} <div class="active-banner-slider owl-carousel">
 						<!-- single-slide -->
 						<div class="row single-slide align-items-center d-flex">
 							<div class="col-lg-5 col-md-6">
@@ -43,12 +43,32 @@
 								</div>
 							</div>
 						</div>
-					</div>
-				</div>
+					</div> {% endcomment %}
+				{% comment %} </div>
 			</div>
 		</div>
-	</section>
+	</section>  {% endcomment %}
 	<!-- End banner Area -->
+	   <!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+      <div class="container">
+        <div
+          class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+         
+          <div class="col-first">
+            <h1>Karma store</h1>
+            <nav class="d-flex align-items-center">
+              <a href="index.html"
+                >Home<span ></span
+              ></a>
+              {% comment %} <a href="#">Shop<span class="lnr"></span></a> {% endcomment %}
+             
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Banner Area -->
 
 	<!-- start features Area -->
 	<section class="features-area section_gap">
@@ -125,22 +145,6 @@
 								</div>
 								<div class="prd-bottom">
 
-									{% comment %} <a href="{{ k.get_url }}" class="social-info">
-										<span class="ti-bag"></span>
-										<p class="hover-text">cart</p>
-									</a>
-									 <a href="" class="social-info">
-										<span class="lnr lnr-heart"></span>
-										<p class="hover-text">Wishlist</p>
-									</a>
-									<a href="" class="social-info">
-										<span class="lnr lnr-sync"></span>
-										<p class="hover-text">compare</p>
-									</a>
-									<a href="" class="social-info">
-										<span class="lnr lnr-move"></span>
-										<p class="hover-text">view more</p>
-									</a>  {% endcomment %}
 								</div>
 							</div>
 						</div>
@@ -171,25 +175,7 @@
 								<div class="price">
 									<h6>₹{{k.price}}</h6>
 								</div>
-								<div class="prd-bottom">
-
-									<a href="{% url 'add_cart' k.id %}" class="social-info">
-										<span class="ti-bag"></span>
-										<p class="hover-text">cart</p>
-									</a>
-									<a href="" class="social-info">
-										<span class="lnr lnr-heart"></span>
-										<p class="hover-text">Wishlist</p>
-									</a>
-									<a href="" class="social-info">
-										<span class="lnr lnr-sync"></span>
-										<p class="hover-text">compare</p>
-									</a>
-									<a href="" class="social-info">
-										<span class="lnr lnr-move"></span>
-										<p class="hover-text">view more</p>
-									</a>
-								</div>
+								
 							</div>
 						</div>
 					</div>

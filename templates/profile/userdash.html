@@ -10,7 +10,7 @@
 </header>
 <div class="card-body">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6 mt-2">
        <div class="card" style="text-align:center;">
            <div class="card-body">
                <h5 class="card-title">Total Orders<h5>
@@ -19,8 +19,17 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mt-2">
        <div class="card" style="text-align:center;">
+           <div class="card-body">
+               <h5 class="card-title">My Wallet Amount<h5>
+               <h6 class="card-title">karma store<h6>
+                <h4 class="text-success">₹ {{userprofile.wallet}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mt-2"  >
+       <div class="card" style="text-align:center;display: flex;justify-content: center;">
            <div class="card-body">
            {% if userprofile.profile_picture.url != '' %}
               <img src="{{userprofile.profile_picture.url}}" alt="user profile pitcure" width="50" height="50" style="border-radius:50%">

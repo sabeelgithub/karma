@@ -28,8 +28,11 @@
                    
                     </div>
                     <div class="form-group col-md-6">
+                    
                       <label>Phone number</label>
-                     {{user_form.phone}}
+                     {% comment %} {{user_form.phone}} {% endcomment %}
+                     <input type="number" name="phone" value="{{user.phone}}" onkeyup="validateEditProfMobilenumber()" class="form-control"  id="id_phone">
+                      <span id="mobilenumber-error"class='change'></span>
 
                     </div>
                     <div class="form-group col-md-6">
@@ -40,7 +43,9 @@
                   </div>
                   <div class="form-group">
                   <label>email</label>
-                   {{user_form.email}}
+                   {% comment %} {{user_form.email}} {% endcomment %}
+                   <input type="email" name="email" value="{{user.email}}" maxlength="254" onkeyup="validateEditProfEmail()" class="form-control"  id="id_email">
+                   	<span id="email-error"class='change'></span>
                    
                   
                   </div>
@@ -75,7 +80,8 @@
                     
                     </div>
                   </div>
-                  <input type="submit" value="save" class="btn btn-primary">
+                  <input type="submit" value="save" onclick="return validateEditProfForm()" class="btn btn-primary">
+                  <span id="submit-error" class="mt-5"></span>
                
                 </form>
               </div>

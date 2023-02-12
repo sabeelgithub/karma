@@ -10,6 +10,8 @@ class UserProfile(models.Model):
     city = models.CharField(blank=True,max_length=20,null=True)
     state = models.CharField(blank=True,max_length=20,null=True)
     country = models.CharField(blank=True,max_length=20,null=True)
+    wallet = models.FloatField(blank=True,null=True,default=0)
+    
 
     def __str__(self):
         return self.user.first_name

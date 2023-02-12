@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse,JsonResponse
 from .models import Order,Payment,Address
 from shop.models import Variation,Products
+from home.models import UserProfile
 from carts.models import CartItem
 from .forms import OrderForm
 import datetime
@@ -319,24 +320,37 @@ def cancel_order(request,id):
     order.status = "Cancelled"
     order.save()
     payment = Payment.objects.get(order_id = order.order_number)
-    payment.delete()
+    
      
-    order_product = OrderProduct.objects.get(user=request.user,order=order) 
+    order_products = OrderProduct.objects.filter(user=request.user,order=order) 
+    for order_product in order_products:
     # increase quantity of product
-    product = Products.objects.get( id = order_product.product_id)
-    product.stock += order_product.quantity
-    product.save()
-    
-    # increase quantity of product variation
-    
-    print(order_product.variations)
-    variation = Variation.objects.filter(id__in= order_product.variations.all())
-    print(variation)
+      product = Products.objects.get( id = order_product.product_id)
+      product.stock += order_product.quantity
+      product.save()
+      
+      # increase quantity of product variation
+      
+      print(order_product.variations)
+      variation = Variation.objects.filter(id__in= order_product.variations.all())
+      print(variation)
 
-    for var in variation:
-         var.stock += order_product.quantity
-         var.save()
-         print('ann')
+      for var in variation:
+            var.stock += order_product.quantity
+            var.save()
+            print('ann')
+
+    profile = UserProfile.objects.get(user=request.user) 
+    print(profile)
+    if payment.status == 'True':
+       print('hlo')
+       print(payment.amount_paid)
+       profile.wallet += payment.amount_paid
+       print(profile.wallet)
+       profile.save()
+    
+    
+    payment.delete()
     if request.user.is_superuser:
       return redirect('orders')
     else:
@@ -356,22 +370,34 @@ def return_order(request, id):
   order.save()
   payment = Payment.objects.get(order_id = order.order_number)
   print("order get")
-  payment.delete()
-
-  order_product = OrderProduct.objects.get(user=request.user,order=order) 
-  # increase quantity of product
-  product = Products.objects.get( id = order_product.product_id)
-  product.stock += order_product.quantity
-  product.save()
   
-  # increase quantity of product variation
-  print(order_product.variations)
-  variation = Variation.objects.filter(id__in= order_product.variations.all())
-  print(variation)
-  for var in variation:
-         var.stock += order_product.quantity
-         var.save()
-         print('ann')
+
+  order_products = OrderProduct.objects.filter(user=request.user,order=order)
+  for order_product in order_products: 
+         # increase quantity of product
+         product = Products.objects.get( id = order_product.product_id)
+         product.stock += order_product.quantity
+         product.save()
+  
+        # increase quantity of product variation
+         print(order_product.variations)
+         variation = Variation.objects.filter(id__in= order_product.variations.all())
+         print(variation)
+         for var in variation:
+               var.stock += order_product.quantity
+               var.save()
+               print('ann')
+
+  profile = UserProfile.objects.get(user=request.user) 
+  if payment.status == 'True':
+       print('hlo')
+       print(payment.amount_paid)
+       profile.wallet += payment.amount_paid
+       print(profile.wallet)
+       profile.save() 
+
+  payment.delete()              
+    
 
          
 

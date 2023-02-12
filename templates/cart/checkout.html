@@ -306,11 +306,15 @@
                   <div class="form-row">
                     <div class="form-group col-md-6">
                         <label >Email</label>
-                        {{form.email}}
+                          <input type="email" name="email" maxlength="50" class="form-control" onkeyup="validateAddAddressEmail()" id="id_email">
+                         	<span id="email-error"class='change'></span>
+                        {% comment %} {{form.email}} {% endcomment %}
                     </div>
                     <div class="form-group col-md-6">
                           <label >Phone Number</label>
-                          {{form.phone}}
+                          <input type="text" name="phone" maxlength="15" class="form-control" onkeyup="validateAddAddressMobilenumber()" id="id_phone">
+                           <span id="mobilenumber-error"class='change'></span>
+                          {% comment %} {{form.phone}} {% endcomment %}
                     </div>
                     <div class="form-group col-md-6">
                       <label >Address Line 1</label>
@@ -334,22 +338,15 @@
                     </div>
                          
                   </div>
-                 
-  
-               
-           {% for message in messages %}
-                      <hr />
-                      <p class="text-danger">{{message}}</p>
-                      {% endfor%}
         
         </div>
         </div> <!-- row.// -->
       </div> <!-- card-body .// -->
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="display:flex;justify-content:start">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <a href=""><button type="submit" class="btn btn-primary">Save</button></a>
-         </form>
+        <a href=""><button type="submit" onclick="return validateAddAddresForm()"  class="btn btn-primary">Save</button></a>
+         </form><span id="submit-error" class="mt-2"></span>
       </div>
     </div>
   </div>

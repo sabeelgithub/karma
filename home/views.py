@@ -20,9 +20,6 @@ def index(request):
     }
     return render(request,'index.html',context)
 
-# @login_required(login_url='login')
-# def profile(request):
-#     return render(request,'profile.html')
 
 @login_required(login_url='login')
 def userdash(request):
@@ -90,10 +87,9 @@ def my_orders(request):
     paginator = Paginator(orders,8)
     page= request.GET.get('page')
     paged_users = paginator.get_page(page)
-    # orderdate = orders.created_at
     today = date.today()
     for order in orders:
-     add = order.created_at + timedelta(days=0)
+     add = order.updated_at + timedelta(days=7)
 
     context = {
        'orders': paged_users, 
@@ -205,7 +201,6 @@ def deleteCheckoutAddress(request,id):
 
 
 
-
 def AddCheckoutAddress(request):
     if request.method == 'POST':
         form = AddressForm(request.POST)
@@ -229,5 +224,8 @@ def AddCheckoutAddress(request):
             return redirect('checkout')
   
 
+
+def error_404(request,exception):
+    return render(request,'404.html', status=403)
 
 

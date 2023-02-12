@@ -219,3 +219,70 @@ def verify_codelogin(request):
 
       return render(request,'authenticate/verify_codelogin.html')
     
+def forgotPassword(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    if request.method == 'POST':
+        email = request.POST['email']
+        if CustomUser.objects.filter(email=email).exists():
+            user = CustomUser.objects.get(email__exact=email)
+
+            # Reset password email
+            current_site = get_current_site(request)
+            mail_subject = 'Please activate your account'
+            messaage = render_to_string('authenticate/password-reset.html',{
+                'user': user,
+                'domain' : current_site,
+                'uid' : urlsafe_base64_encode(force_bytes(user.pk)),
+                'token' : default_token_generator.make_token(user),
+            })
+            to_mail = email
+            print(email)
+            send_male= EmailMessage(mail_subject, messaage, to=[to_mail])
+            print('last chathi')
+            print(send_male)
+            send_male.send()
+            
+            messages.success(request, "Password reset email has been sent to your email. Please reset your account")
+            return redirect('login')
+        else:
+            messages.error(request, 'Account does not exists')
+            return redirect('forgotPassword')
+    return render(request, 'authenticate/forgotPassword.html')
+
+
+def reset_password_validate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = CustomUser._default_manager.get(pk=uid)
+    except:
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        request.session['uid'] = uid
+        messages.success(request, 'Please reset your password')
+        return redirect('resetPassword')
+
+    else:
+        messages.error(request, 'This link has been expired!')
+        return redirect('login')
+def resetPassword(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    if request.method == 'POST':
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        if password == confirm_password:
+            uid = request.session.get('uid')
+            user = CustomUser.objects.get(pk=uid)
+            user.set_password(password)
+            user.save()
+            messages.success(request, 'Password reset successfully ')
+            return redirect('login')
+
+        else:
+            messages.error(request, 'Password does not match!')
+            return redirect('resetPassword')
+    else:
+     return render(request,'authenticate/resetPassword.html')
