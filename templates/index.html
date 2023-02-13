@@ -58,10 +58,8 @@
           <div class="col-first">
             <h1>Karma store</h1>
             <nav class="d-flex align-items-center">
-              <a href="index.html"
-                >Home<span ></span
-              ></a>
-              {% comment %} <a href="#">Shop<span class="lnr"></span></a> {% endcomment %}
+              <a href="{% url 'home' %}">Home<span ></span></a>
+              <a href="#">Explore the gallery<span class="lnr"></span></a>
              
             </nav>
           </div>
@@ -91,7 +89,7 @@
 							<img src="{% static 'img/features/f-icon2.png'%}" alt="">
 						</div>
 						<h6>Return Policy</h6>
-						<p>Free Shipping on all order</p>
+						<p>7 days Return Policy</p>
 					</div>
 				</div>
 				<!-- single features -->
@@ -101,7 +99,7 @@
 							<img src="{% static 'img/features/f-icon3.png'%}" alt="">
 						</div>
 						<h6>24/7 Support</h6>
-						<p>Free Shipping on all order</p>
+						<p>Day night services</p>
 					</div>
 				</div>
 				<!-- single features -->
@@ -111,7 +109,7 @@
 							<img src="{%static 'img/features/f-icon4.png'%}" alt="">
 						</div>
 						<h6>Secure Payment</h6>
-						<p>Free Shipping on all order</p>
+						<p>All types of Payments</p>
 					</div>
 				</div>
 			</div>
