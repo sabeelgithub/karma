@@ -8,6 +8,7 @@ from .forms import OrderForm
 import datetime
 from .models import Payment,OrderProduct,Order,Coupon,UserCoupon
 import json
+from django.contrib import messages
 
 # Create your views here.
 def payments(request):
@@ -270,31 +271,6 @@ def cash_on_delivery(request,id):
       CartItem.objects.filter(user= request.user).delete()
 
       ordered_products = OrderProduct.objects.filter(order_id = order.id)
-
-      # total = 0
-      # for i in ordered_products:
-      #      total += i.product_price * i.quantity
-      # tax = (2*total)/100
-      # shipping = (2*total)/100
-      # grand_total = order.order_total + shipping
-      # order.order_total = grand_total
-      # order.save()
-      # payment = Payment(
-      #    amount_paid = order.order_total,
-      #    user = request.user,
-      #    payment_id = order.order_number,
-      #    order_id = order.order_number,
-      #    payment_method = 'Cash on Delivery',
-         
-      #    status = False
-      # )
-      # payment.save()
-      # order.payment = payment
-      # order.save()
-
-      
-     
-
       context ={
             'order':order,
             'ordered_products':ordered_products,
@@ -341,6 +317,7 @@ def cancel_order(request,id):
             print('ann')
 
     profile = UserProfile.objects.get(user=request.user) 
+
     print(profile)
     if payment.status == 'True':
        print('hlo')
@@ -352,8 +329,12 @@ def cancel_order(request,id):
     
     payment.delete()
     if request.user.is_superuser:
+      print(type(profile.user))
+      print(type(profile.user.first_name))
+      messages.success(request, profile.user.first_name +'cancelled' + str(order.order_number))
       return redirect('orders')
     else:
+      messages.success(request,'item cancelled successfully')
       return redirect('my_orders')
     
 
@@ -397,10 +378,7 @@ def return_order(request, id):
        profile.save() 
 
   payment.delete()              
-    
-
-         
-
+  messages.success(request,'item returned successfully')
   return redirect('my_orders')
 
 

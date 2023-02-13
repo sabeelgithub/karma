@@ -220,12 +220,10 @@ def AddCheckoutAddress(request):
             messages.success(request,'Address added Successfully')
             return redirect('checkout')
         else:
-            messages.success(request,'Form is Not valid')
+            messages.error(request,'Form is Not valid')
             return redirect('checkout')
   
 
 
-def error_404(request,exception):
-    return render(request,'404.html', status=403)
 
 

@@ -158,16 +158,15 @@
                 href="#collapseExample"
                 role="button"
                 aria-expanded="false"
-                aria-controls="collapseExample">Choose Address
+                aria-controls="collapseExample" required>Choose Address
               </a>
 
               
-            
+           
               <button type="button" class="btn btn-success" data-toggle="modal" data-target="#a{{i.id}}">
                  Add Address
               </button>
-
-
+              
 
 
              
@@ -261,11 +260,19 @@
                   <input type="text" name="coupon" id="coupon_code1" style="display: none;">
                 </li>
               </ul>
+              {% if  not address %}
+              <button
+                type="submit"
+                class="btn btn-danger btn-lg btn-block mb-2" disabled>
+                Add a address in above feild
+              </button>
+              {% else %}
               <button
                 type="submit"
                 class="btn btn-warning btn-lg btn-block mb-2">
                 Place order
               </button>
+              {% endif %}
             </div>
           </div>
         </div>
