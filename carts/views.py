@@ -69,7 +69,7 @@ def add_cart(request,product_id):
                 cart_item.variations.clear()
                 cart_item.variations.add(*product_variation)
             cart_item.save()
-        
+        print(cart_item)
         return redirect('cart')   
       # if user is not authenticated  
     else:

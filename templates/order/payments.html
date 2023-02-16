@@ -121,8 +121,18 @@
                           <!-- Button trigger modal -->
 
  <button type ="submit" class="btn btn-primary btn-lg btn-block mb-2"  data-toggle="modal" data-target="#a{{i.id}}"  >Cash on Delivary</button>
+ {% if profile.wallet >= order.order_total %}
+ <button type="submit" data-toggle="modal" data-target="#b{{i.id}}" class="btn btn-danger btn-lg btn-block mb-2">
+                Wallet Payment
+              </button>
+              {% endif %}
+              
  <div id="paypal-button-container">
 </div>
+
+ 
+
+              
 
 <!-- Modal -->
 <div class="modal fade" id="a{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -145,6 +155,34 @@
   </div>
 </div>
  <!-- Set up a container element for the button -->
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="b{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">payment confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+    <h5 class="modal-title" id="exampleModalLabel">You are choosed Wallet payment</h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="{% url 'wallet' order_number %}"><button type="button" class="btn btn-primary">Proceed</button></a>
+      </div>
+    </div>
+  </div>
+</div>
+ <!-- Set up a container element for the button -->
+
+
                            {% comment %} <div id="paypal-button-container" style="width:294px;height:66px;">
                            </div> {% endcomment %}
 

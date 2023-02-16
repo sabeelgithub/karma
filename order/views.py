@@ -177,6 +177,7 @@ def place_order(request,total=0,quantity=0):
             pass
 
           order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
+          profile = UserProfile.objects.get(user=request.user)
 
 
           context={
@@ -187,6 +188,7 @@ def place_order(request,total=0,quantity=0):
              'coupon_discount':coupon_discount,
              'grand_total':grand_total,
              'order_number':order_number,
+             'profile':profile,
              
 
           }
@@ -412,5 +414,85 @@ def coupons(request):
                 }
 
   return JsonResponse(response)
+
+def wallet(request,id):
+   print('hlo')
+   try:
+      print('hoi')
+      order = Order.objects.get(user=request.user,is_ordered=False,order_number=id)
+      cart_items = CartItem.objects.filter(user=request.user)
+      order.is_ordered = True
+      payment = Payment(
+               user = request.user,
+               payment_id = order.order_number,
+               order_id = order.order_number,
+               payment_method = 'Wallet payment', 
+               amount_paid = order.order_total,
+               status = 'True'
+      )
+      payment.save()
+      order.payment = payment
+      order.is_ordered = True
+      order.save()
+
+      # Move cart item to ordered product table
+      for item in cart_items:
+         order_product = OrderProduct()
+         order_product.order_id = order.id
+         order_product.payment = payment
+         order_product.user_id = request.user.id
+         order_product.product_id = item.product_id
+         order_product.quantity = item.quantity
+         order_product.product_price = item.product.price
+         order_product.ordered = True
+         order_product.save()
+
+         cart_item = CartItem.objects.get(id=item.id)
+         print(cart_item)
+         product_variation = cart_item.variations.all()
+         order_product = OrderProduct.objects.get(id=order_product.id)
+         order_product.variations.set(product_variation)
+         order_product.save()
+
+         # Reduce quantity of product
+         product = Products.objects.get( id = cart_item.product_id)
+         product.stock -= cart_item.quantity
+         product.save()
+
+         variation = Variation.objects.filter(id__in= cart_item.variations.all())
+         
+         for var in variation:
+               var.stock -= cart_item.quantity
+               var.save()
+               print('ann')
+
+      CartItem.objects.filter(user= request.user).delete()       
+      ordered_products = OrderProduct.objects.filter(order_id = order.id)  
+      total = 0
+      for i in ordered_products:
+           total += i.product_price * i.quantity
+      tax = (2*total)/100  
+      profile = UserProfile.objects.get(user=request.user)  
+      profile.wallet -= order.order_total
+      profile.save() 
+      print('ann')
+      
+      context ={
+            'order':order,
+            'ordered_products':ordered_products,
+            'payment':payment,
+            'total':total,
+            'tax':tax, 
+            'profile':profile,     
+         }  
+      return render(request,'order/wallet_success.html',context)   
+
+
+   except Exception as e:
+     print(e)
+       
+ 
+     print('potti')
+   return redirect('home')
 
 

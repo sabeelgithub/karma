@@ -10,6 +10,6 @@ urlpatterns = [
     path("return_order/<int:id>/",views.return_order,name='return_order'),  
  
     path("coupons/",views.coupons,name='coupons'),
-    
+    path('wallet/<int:id>/', views.wallet,name='wallet'),
     
 ]
