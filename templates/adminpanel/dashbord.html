@@ -163,10 +163,10 @@
 <script>
   if ($("#north-america-chart").length) {
     var areaData = {
-      labels: ["PayPal", "Cash on delivery"],
+      labels: ["PayPal", "Cash on delivery","Wallet payment"],
       datasets: [
         {
-          data: ["{{paypal_orders}}", "{{cash_on_delivery_count}}"],
+          data: ["{{paypal_orders}}", "{{cash_on_delivery_count}}","{{wallet_payment}}"],
           backgroundColor: ["#4B49AC", "#FFC100", "#248AFD"],
           borderColor: "rgba(0,0,0,0)",
         },
@@ -203,9 +203,9 @@
         text.push(
           '<div class="d-flex justify-content-between mx-4 mx-xl-5 mt-3"><div class="d-flex align-items-center"><div class="mr-3" style="width:20px; height:20px; border-radius: 50%; background-color: ' +
             chart.data.datasets[0].backgroundColor[1] +
-            '"></div><p class="mb-0">RazorPay Sales</p></div>'
+            '"></div><p class="mb-0">wallet Sales</p></div>'
         );
-        text.push('<p class="mb-0 mr-auto ml-4">{{razorpay_orders}}</p>');
+        text.push('<p class="mb-0 mr-auto ml-4">{{wallet_payment}}</p>');
         text.push("</div>");
         text.push(
           '<div class="d-flex justify-content-between mx-4 mx-xl-5 mt-3"><div class="d-flex align-items-center"><div class="mr-3" style="width:20px; height:20px; border-radius: 50%; background-color: ' +

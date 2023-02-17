@@ -416,9 +416,10 @@ def dashbord(request):
     print('user',number_of_users )
     paypal_orders = Payment.objects.filter(payment_method="Paypal",status = 'True').count()
     cash_on_delivery_count = Payment.objects.filter(payment_method="Cash on Delivery",status = 'True').count()
+    wallet_payment = Payment.objects.filter(payment_method="Wallet payment",status = 'True').count()
 
     print('papal' ,cash_on_delivery_count)
-    total_payment_count = paypal_orders  + cash_on_delivery_count
+    total_payment_count = paypal_orders  + cash_on_delivery_count + wallet_payment
     try:
         total_payment_amount = Payment.objects.filter(status = 'True').annotate(total_amount=Cast('amount_paid', FloatField())).aggregate(Sum('total_amount'))
         
@@ -467,6 +468,7 @@ def dashbord(request):
         'order_count_in_week':order_count_in_week,
         'number_of_users':number_of_users,
         'paypal_orders':paypal_orders,
+        'wallet_payment':wallet_payment,
         'total_payment_count':total_payment_count,
         'revenue':revenue,
         'ordered':ordered,
