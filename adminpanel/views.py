@@ -15,13 +15,19 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 import xlwt
+#from django.contrib.admin.views.decorators import is_superuser_required
+#from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 
 # Create your views here.
 def adminlogin(request):
-    if 'email' in request.session:
-        return redirect('dashbord')
+    if request.user.is_superuser:
+       return redirect('dashbord')
+
+    
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
@@ -42,13 +48,15 @@ def adminlogin(request):
     else:
         return render(request,'adminpanel/adminlogin.html')
 
-   
+ 
 def adminlogout(request):
     if 'email' in request.session:
         request.session.flush()
     print('admin logoutted')
     auth.logout(request)
     return redirect('adminlogin')
+
+@staff_member_required(login_url = 'adminLogin')
 def users(request):
     users = CustomUser.objects.all()
     paginator = Paginator(users,8)
